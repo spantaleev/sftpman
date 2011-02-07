@@ -92,7 +92,7 @@ class SftpMan:
  		RecordRenderer(controller, self).render()
 
 
-	def refresh_list(self):		
+	def refresh_list(self):
 		ids_mounted = self._manager.get_mounted_ids()
 		
 		for childHbox in self._vbox_list.get_children():
@@ -219,6 +219,7 @@ class SftpMan:
 		self.window.add(vbox_main)
 		self.window.show_all()
 		
+		self._in_list_mode = True
 		
 		# we need to do this if we want to user threads in our GTK app
 		gobject.threads_init()
@@ -227,7 +228,8 @@ class SftpMan:
 			while True:
 				# trying to update the GTK GUI from a thread causes a segmentation fault
 				# this is the proper way to do it
-				gobject.idle_add(self.refresh_list)
+				if self._in_list_mode:
+					gobject.idle_add(self.refresh_list)
 				sleep(15)
 
 		refresher_thread = Thread(target=list_periodic_refresher)
@@ -249,6 +251,7 @@ class RecordRenderer(object):
 		self._record_container = program_obj.record_container
 		
 		self._program_obj.list_container.hide()
+		self._program_obj._in_list_mode = False
 	
 	
 	def get_fields(self):
@@ -364,6 +367,7 @@ class RecordRenderer(object):
 		
 		self._program_obj.refresh_list()
 		self._program_obj.list_container.show()
+		self._program_obj._in_list_mode = True
 	
 	
 	def render(self):
