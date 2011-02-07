@@ -4,7 +4,9 @@ It relies on [sshfs](http://fuse.sourceforge.net/sshfs.html) to do all the mount
 SftpMan allows you to setup many such remote filesystems and mounts/unmounts them for you easily.
 
 Every managed by SftpMan system is identified by an id as "my-machine", which is used in file paths and when managing the system.
+
 Configuration data is stored in `~/.config/sftpman/` as JSON files.
+
 All systems are mounted under `/mnt/sshfs/`. For the "my-machine" machine, that would be `/mnt/sshfs/my-machine`.
 
 
@@ -14,6 +16,7 @@ Launching the main file (sftpman.py) with command line arguments launches the GU
 Only the GUI currently supports adding/editing/removing of sftp systems.
 
 In order to setup an sftp system for further use (mounting/unmounting) you need to specify:
+
 - Hostname/IP
 - Port (defaults to 22)
 - Remote username/login
@@ -33,7 +36,7 @@ I'm using it to initialize my ssh-agent (by adding my key there), so that I only
 ## CLI Application ##
 
 Launching the main file (sftpman.py) with at least one additional command line argument will launchy CLI mode.
-What we support in the CLI is fairly limited, but it's still at least a bit usable (as you can see in the sleep.d/49-sftpman script).
+What we support in the CLI is fairly limited, but it's still at least a bit usable (as you can see in the `sleep.d/49-sftpman` script).
 
 It can do mounting/unmounting and listing at the moment. It outputs results as JSON.
 
