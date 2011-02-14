@@ -39,7 +39,7 @@ class SftpManager(object):
 	
 	
 	def get_pid_by_system_id(self, system_id):
-		processes = shell_exec("/bin/ps ux | /bin/grep sshfs")
+		processes = shell_exec("/bin/ps ux | /bin/grep '/usr/bin/sshfs'")
 		
 		# Looking for `username {PID} blah blah /mnt/sshfs/{id}`
 		regex = re.compile(r"(?:\w+)\s([0-9]+)(?:.+?)%s(?:\w+)" % re.escape(self._mount_base))
