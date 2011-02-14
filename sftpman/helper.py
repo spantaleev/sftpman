@@ -1,6 +1,5 @@
 import os, errno
 import subprocess
-from time import sleep
 
 def mkdir_p(path):
 	"""NOOP if the directory exists. If not, it creates the the whole directory tree."""
@@ -27,14 +26,10 @@ def shell_exec(command):
 	return subprocess.Popen(command, shell=True, stdout=subprocess.PIPE).communicate()[0]
 	
 	
-def kill_pid(pid):
-	"""Ensure the given process id is killed.
+def kill_pid(pid, signal=15):
+	"""Sends a signal to the process with the given id."""
 	
-	It plays nice at first (SIGTERM), but will force kill (SIGKILL) the process if necessary."""
-	
-	shell_exec("/bin/kill -15 %d" % pid)
-	sleep(2)
-	shell_exec("/bin/kill -9 %d" % pid)
+	shell_exec("/bin/kill -%d %d" % (signal, pid))
 	
 
 def open_file_browser(path):

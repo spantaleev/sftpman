@@ -10,6 +10,7 @@ This class uses the SftpManager to access information from the outside world.
 
 import json
 import os
+from time import sleep
 
 from .helper import rmdir, shell_exec, kill_pid, mkdir_p
 from .exception import SftpConfigException
@@ -171,9 +172,15 @@ class SftpSystemController(object):
 
 	def _kill(self):
 		pid = self._manager.get_pid_by_system_id(self._id)
-		
+		if pid is None:
+			return
+		kill_pid(pid, 15)
+
+		sleep(2)
+
+		pid = self._manager.get_pid_by_system_id(self._id)
 		if pid is not None:
-			kill_pid(pid)
+			kill_pid(pid, 9)
 	
 	
 	@property
