@@ -1,7 +1,9 @@
 SftpMan consists of a Command Line and a GTK application that make it simpler to setup and mount SSHFS/SFTP file systems.
 
+The idea was to develop a simple GUI program for Linux that can be used to manage SFTP systems (similar to SftpDrive/ExpandDrive available for Windows/Mac).
+
 It relies on [sshfs](http://fuse.sourceforge.net/sshfs.html) to do all the mounting work.
-SftpMan allows you to setup many such remote filesystems and mounts/unmounts them for you easily.
+SftpMan allows you to setup many remote filesystems and helps you easily mount/unmount them. 
 
 Every managed by SftpMan system is identified by an id as "my-machine", which is used in file paths and when managing the system.
 
@@ -55,5 +57,5 @@ Launch `sftpman.py help` to see the exact commands it offers.
 - Doesn't support password authentication, only SSH keys
 - Doesn't support all of the functionality in CLI mode - certain things require the GUI to be used
 - Doesn't do any validation on the data you provide in the GUI
-- Doesn't support mounting in a different location then /mnt/sshfs/
+- Doesn't support mounting in a location different than `/mnt/sshfs/`
 - All logic runs in the GUI thread, which can make the GUI freeze for a while
