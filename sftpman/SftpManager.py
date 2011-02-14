@@ -42,16 +42,12 @@ class SftpManager(object):
 		processes = shell_exec("/bin/ps ux | /bin/grep '/usr/bin/sshfs'")
 		
 		# Looking for `username {PID} blah blah /mnt/sshfs/{id}`
-		regex = re.compile(r"(?:\w+)\s([0-9]+)(?:.+?)%s(?:\w+)" % re.escape(self._mount_base))
-		
 		mount_point = "%s%s" % (self._mount_base, system_id)
+		regex = re.compile("^(?:\w+)\s+(\d+)\s+(?:.+?)%s$" % re.escape(mount_point))
 		
 		ids = []
 		for line in processes.split("\n"):
-			if mount_point not in line:
-				continue
-
-			match_object = regex.search(line)
+			match_object = regex.match(line)
 			if match_object is None:
 				continue
 			
@@ -66,10 +62,10 @@ class SftpManager(object):
 	
 	
 	def get_mounted_ids(self):
-		processes = shell_exec("/bin/ps ux | /bin/grep sshfs")
+		processes = shell_exec("/bin/ps ux | /bin/grep '/usr/bin/sshfs'")
 
 		# Looking for /mnt/sshfs/{id}
-		regex = re.compile(r"(%s)(\w+)" % re.escape(self._mount_base))
+		regex = re.compile("/usr/bin/sshfs(?:.+?)%s(\w+)$" % re.escape(self._mount_base))
 		
 		ids = []
 		for line in processes.split("\n"):
@@ -80,7 +76,7 @@ class SftpManager(object):
 			if (match_object is None):
 				continue
 			
-			ids.append(match_object.group(2))
+			ids.append(match_object.group(1))
 
 		return ids
 	
