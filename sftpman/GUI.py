@@ -207,7 +207,7 @@ class SftpMan:
 		self.window.set_position(gtk.WIN_POS_CENTER)
 		self.window.connect("destroy", self.handler_destroy)
 		
-		icon_file = os.path.dirname(__file__) + "/../sftpman.png"
+		icon_file = os.path.join(os.path.dirname(__file__), '..', 'sftpman.png')
 		if os.path.exists(icon_file):
 			self.window.set_icon_from_file(icon_file)		
 

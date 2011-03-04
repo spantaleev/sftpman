@@ -7,6 +7,6 @@ username=`ps aux | grep gnome-settings-daemon | grep -v "grep" | grep -o -E "^(\
 if [ -n "$1" ]; then
 	if ([ "$1" = "suspend" ] || [ "$1" = "hibernate" ]); then
 		# we're going going to sleep now, so unmount everything
-		su -l $username -c '/usr/local/bin/SftpMan/sftpman.py unmount_all'	
+		su -l $username -c 'sftpman unmount_all'	
 	fi
 fi

@@ -1,0 +1,9 @@
+*.pyc
+*.pyo
+sftpman.png
+dist
+*.egg-info
+*.egg
+*.swp
+env
+env*
