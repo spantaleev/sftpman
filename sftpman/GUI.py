@@ -196,11 +196,6 @@ class SftpMan:
 	def __init__(self):
 		self._manager = SftpManager()
 		
-		# Allow GTK buttons to have images.. this was disabled by default on Fedora
-		settings = gtk.settings_get_default()
-		settings.props.gtk_button_images = True
-		
-
 		self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
 		self.window.set_title("SftpMan")
 		self.window.resize(550, 350)
@@ -221,7 +216,7 @@ class SftpMan:
 		
 		self._in_list_mode = True
 		
-		# we need to do this if we want to user threads in our GTK app
+		# we need to do this if we want to use threads in our GTK app
 		gobject.threads_init()
 		
 		def list_periodic_refresher():
