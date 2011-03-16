@@ -233,6 +233,15 @@ class SftpMan:
 
 
     def main(self):
+        mount_path = self._manager.mount_path_base
+        if not os.access(mount_path, os.W_OK):
+            message = "Mount path `%s` doesn't exist or is not writable by the current user." % mount_path
+            message += "\n\nMounting will fail, until the problem is fixed."
+            md = gtk.MessageDialog(None, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_WARNING,
+                gtk.BUTTONS_CLOSE, message)
+            md.run()
+            md.destroy()
+
         gtk.main()
 
 
