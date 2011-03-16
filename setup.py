@@ -2,7 +2,7 @@
 SftpMan
 =======
 
-SftpMan is a command-line and GUI application that make it easy to setup and mount SSHFS/SFTP file systems.
+SftpMan is a command-line and GUI application that makes it easy to setup and mount SSHFS/SFTP file systems.
 
 It allows you to setup all your SFTP systems using a GUI and easily mount/unmount them (from the GUI or the CLI).
 """
