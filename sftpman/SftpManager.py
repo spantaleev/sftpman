@@ -11,77 +11,77 @@ import os
 from .helper import mkdir_p, shell_exec
 
 class SftpManager(object):
-	
-	def __init__(self):
-		self._mount_base = "/mnt/sshfs/"
-		self._config_base = os.path.expanduser("~/.config/sftpman/")
+    
+    def __init__(self):
+        self._mount_base = "/mnt/sshfs/"
+        self._config_base = os.path.expanduser("~/.config/sftpman/")
 
-		mkdir_p(self.config_path_mounts)
-
-
-	@property
-	def config_path_base(self):
-		return self._config_base
+        mkdir_p(self.config_path_mounts)
 
 
-	@property
-	def config_path_mounts(self):
-		return self._config_base + "mounts/"
+    @property
+    def config_path_base(self):
+        return self._config_base
 
 
-	@property
-	def mount_path_base(self):
-		return self._mount_base
-	
-	
-	def is_mounted(self, system_id):
-		return system_id in self.get_mounted_ids()
-	
-	
-	def get_pid_by_system_id(self, system_id):
-		processes = shell_exec("/bin/ps ux | /bin/grep '/usr/bin/sshfs'")
-		
-		# Looking for `username {PID} blah blah /mnt/sshfs/{id}`
-		mount_point = "%s%s" % (self._mount_base, system_id)
-		regex = re.compile("^(?:\w+)\s+(\d+)\s+(?:.+?)%s$" % re.escape(mount_point))
-		
-		ids = []
-		for line in processes.split("\n"):
-			match_object = regex.match(line)
-			if match_object is None:
-				continue
-			
-			return int(match_object.group(1))
+    @property
+    def config_path_mounts(self):
+        return self._config_base + "mounts/"
 
-		return None
-	
 
-	def get_available_ids(self):
-		cfg_files = shell_exec("/bin/ls %s" % self.config_path_mounts).strip().split("\n")
-		return [file_name[0:-3] for file_name in cfg_files if file_name.endswith(".js")]
-	
-	
-	def get_mounted_ids(self):
-		processes = shell_exec("/bin/ps ux | /bin/grep '/usr/bin/sshfs'")
+    @property
+    def mount_path_base(self):
+        return self._mount_base
+    
+    
+    def is_mounted(self, system_id):
+        return system_id in self.get_mounted_ids()
+    
+    
+    def get_pid_by_system_id(self, system_id):
+        processes = shell_exec("/bin/ps ux | /bin/grep '/usr/bin/sshfs'")
+        
+        # Looking for `username {PID} blah blah /mnt/sshfs/{id}`
+        mount_point = "%s%s" % (self._mount_base, system_id)
+        regex = re.compile("^(?:\w+)\s+(\d+)\s+(?:.+?)%s$" % re.escape(mount_point))
+        
+        ids = []
+        for line in processes.split("\n"):
+            match_object = regex.match(line)
+            if match_object is None:
+                continue
+            
+            return int(match_object.group(1))
 
-		# Looking for /mnt/sshfs/{id}
-		regex = re.compile("/usr/bin/sshfs(?:.+?)%s(\w+)$" % re.escape(self._mount_base))
-		
-		ids = []
-		for line in processes.split("\n"):
-			if self._mount_base not in line:
-				continue
-			
-			match_object = re.search(regex, line)
-			if (match_object is None):
-				continue
-			
-			ids.append(match_object.group(1))
+        return None
+    
 
-		return ids
-	
-	
-	def get_unmounted_ids(self):
-		ids_mounted = self.get_mounted_ids()
-		return [id for id in self.get_available_ids() if id not in ids_mounted]
+    def get_available_ids(self):
+        cfg_files = shell_exec("/bin/ls %s" % self.config_path_mounts).strip().split("\n")
+        return [file_name[0:-3] for file_name in cfg_files if file_name.endswith(".js")]
+    
+    
+    def get_mounted_ids(self):
+        processes = shell_exec("/bin/ps ux | /bin/grep '/usr/bin/sshfs'")
+
+        # Looking for /mnt/sshfs/{id}
+        regex = re.compile("/usr/bin/sshfs(?:.+?)%s(\w+)$" % re.escape(self._mount_base))
+        
+        ids = []
+        for line in processes.split("\n"):
+            if self._mount_base not in line:
+                continue
+            
+            match_object = re.search(regex, line)
+            if (match_object is None):
+                continue
+            
+            ids.append(match_object.group(1))
+
+        return ids
+    
+    
+    def get_unmounted_ids(self):
+        ids_mounted = self.get_mounted_ids()
+        return [id for id in self.get_available_ids() if id not in ids_mounted]
 
