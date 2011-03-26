@@ -3,6 +3,8 @@ SftpMan
 
 .. image:: https://github.com/spantaleev/SftpMan/raw/master/sftpman-gui.png
 
+---------------------------------------
+
 SftpMan consists of a Command Line and a GTK application that make it simpler to setup and mount SSHFS/SFTP file systems.
 
 The idea was to develop a simple GUI program for Linux that can be used to manage SFTP systems.
