@@ -16,6 +16,7 @@ Configuration data is stored in ``~/.config/sftpman/`` as JSON files.
 
 All systems are mounted under ``/mnt/sshfs/``. For the "my-machine" machine, that would be ``/mnt/sshfs/my-machine``.
 
+---------------------------------------
 
 Installing
 ----------
