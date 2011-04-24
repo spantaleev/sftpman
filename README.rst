@@ -10,7 +10,7 @@ SftpMan consists of a Command Line and a GTK application that make it simpler to
 The idea was to develop a simple GUI program for Linux that can be used to manage SFTP systems.
 
 It relies on `sshfs`_ to do all the mounting work.
-SftpMan allows you to setup many remote filesystems and helps you easily mount/unmount them. 
+SftpMan allows you to setup many remote filesystems and helps you easily mount/unmount them.
 
 Every managed by SftpMan system is identified by an id as "my-machine", which is used in file paths and when managing the system.
 
@@ -32,6 +32,10 @@ Installing ``pygtk`` from **pip** would not work, because some of its dependenci
 
 You also need to install `sshfs`_ yourself.
 
+If the SSH keys that you'll use for authentication are password-protected (as they should be)
+and you want the GUI Application to prompt you for a password,
+you may need to install the `openssh-askpass` package (or whatever it's called) for your distribution.
+Some distributions have that installed by default.
 
 GUI (GTK) Application
 ---------------------
@@ -48,7 +52,7 @@ In order to setup an sftp system for further use (mounting/unmounting) you need 
 - Remote mount point (the remote directory you want mounted on your system)
 - Options (options to pass to sshfs if you want something more advanced)
 - Run before mount (a command to execute before mounting)
-	
+
 We currently don't (and probably never will) support mounting by using passwords (instead of keys).
 
 If your SSH private key requires a password to use (as it should), you'll be asked for it.
