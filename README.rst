@@ -20,10 +20,21 @@ All systems are mounted under ``/mnt/sshfs/``. For the "my-machine" machine, tha
 
 ---------------------------------------
 
-Installing
-----------
+Installing on ArchLinux
+-----------------------
 
-Installing using **pip** is possible::
+On `ArchLinux`_, there's an official `sftpman AUR package`_. To install using ``yaourt``::
+
+    yaourt -S sftpman
+
+The package takes care of all dependencies and SftpMan should be able to start.
+
+Optional dependencies will be suggested to you upon install.
+
+Installing on other distributions
+---------------------------------
+
+For other distributions you can install using **pip**::
 
     pip install sftpman
 
@@ -31,6 +42,9 @@ You'll need to install ``pygtk`` manually, but maybe you already have that insta
 Installing ``pygtk`` from **pip** would not work, because some of its dependencies are not available there.
 
 You also need to install `sshfs`_ yourself.
+
+Post-installation tips
+----------------------
 
 If the SSH keys that you'll use for authentication are password-protected (as they should be)
 and you want the GUI Application to prompt you for a password,
@@ -91,3 +105,6 @@ Known limitations
 
 
 .. _sshfs: http://fuse.sourceforge.net/sshfs.html
+.. _ArchLinux: http://www.archlinux.org/
+.. _AUR: https://wiki.archlinux.org/index.php/AUR
+.. _sftpman AUR package: http://aur.archlinux.org/packages.php?ID=49211
