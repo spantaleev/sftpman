@@ -1,6 +1,5 @@
 *.pyc
 *.pyo
-sftpman.png
 dist
 *.egg-info
 *.egg
