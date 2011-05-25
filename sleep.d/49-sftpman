@@ -1,12 +1,10 @@
 #!/bin/dash
 
-# determine the current user that uses a gnome session
-# this can fail badly :)
-username=`ps aux | grep gnome-settings-daemon | grep -v "grep" | grep -o -E "^(\w+)\s"`
-
 if [ -n "$1" ]; then
 	if ([ "$1" = "suspend" ] || [ "$1" = "hibernate" ]); then
-		# we're going going to sleep now, so unmount everything
-		su -l $username -c 'sftpman unmount_all'	
+		# going to sleep now, so unmount everything for all users
+		for username in $(ps aux | grep '/mnt/sshfs/' | grep -v 'grep' | grep -o -E '^(\w+)\s' | uniq); do
+			su -l $username -c 'sftpman unmount_all'
+		done;
 	fi
 fi
