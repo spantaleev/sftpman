@@ -157,6 +157,11 @@ class SystemModel(object):
         with open(path, 'w') as f:
             f.write(self.export())
 
+    def delete(self, environment):
+        path = environment.get_system_config_path(self.id)
+        import os
+        os.unlink(path)
+
     @staticmethod
     def create_by_id(id, environment):
         path = environment.get_system_config_path(id)
