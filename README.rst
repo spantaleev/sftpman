@@ -70,6 +70,10 @@ The CLI application supports the following commands::
             Usage: sftpman mount_all
 
 
+    preflight_check:
+     - Detects whether we have everything needed to mount sshfs filesystems.
+
+
     unmount:
      - Unmounts the specified sftp system.
 
