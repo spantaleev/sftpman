@@ -18,6 +18,16 @@ class SftpCli(object):
             name_clean = name[len("command_"):]
             print("%s:\n - %s\n" % (name_clean, getattr(self, name).__doc__))
 
+    def command_preflight_check(self):
+        checks_pass, failures = self.environment.perform_preflight_check()
+        if checks_pass:
+            print('All checks pass.')
+        else:
+            sys.stderr.write('Problems encountered:\n')
+            for msg in failures:
+                sys.stderr.write(' - %s\n' % msg)
+            sys.exit(1)
+
     def command_ls(self, list_what):
         """Lists the available/mounted/unmounted sftp systems.
 

@@ -63,6 +63,27 @@ class EnvironmentModel(object):
         ids_mounted = self.get_mounted_ids()
         return [id for id in self.get_available_ids() if id not in ids_mounted]
 
+    def perform_preflight_check(self):
+        """Performs checks to see if we have everything needed to mount
+        sshfs filesystems.
+        :return: two-tuple (boolean checks_pass, list failure messages)
+        """
+        import os
+
+        failures = []
+        if not os.access(self.mount_path_base, os.W_OK):
+            msg = ("Mount path `{path}` doesn't exist or is not writable"
+                   " by the current user.")
+            failures.append(msg.format(
+                path = self.mount_path_base
+            ))
+        if not os.path.exists('/usr/bin/sshfs'):
+            msg = ("SSHFS (http://fuse.sourceforge.net/sshfs.html)"
+                   " is not installed to /usr/bin/sshfs.")
+            failures.append(msg)
+
+        return len(failures) == 0, failures
+
 
 class SystemModel(object):
     """Represents a system (mount point) that sftpman manages."""
