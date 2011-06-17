@@ -4,7 +4,6 @@ import re
 from helper import json, shell_exec, mkdir_p, rmdir, kill_pid
 from exception import SftpConfigException
 
-SSH_PORT_DEFAULT = 22
 
 class EnvironmentModel(object):
     """A configuration object that represents the environment
@@ -71,10 +70,12 @@ class SystemModel(object):
     PORT_RANGE_MIN = 0
     PORT_RANGE_MAX = 65535
 
+    SSH_PORT_DEFAULT = 22
+
     def __init__(self, **kwargs):
         self.id = kwargs.get('id', None)
         self.host = kwargs.get('host', None)
-        self.port = int(kwargs.get('port', SSH_PORT_DEFAULT))
+        self.port = int(kwargs.get('port', SystemModel.SSH_PORT_DEFAULT))
         self.user = kwargs.get('user', None)
         self.mount_opts = list(kwargs.get('mountOptions', []))
         self.mount_point = kwargs.get('mountPoint', None)
