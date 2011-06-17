@@ -5,18 +5,20 @@ SftpMan
 SftpMan is a command-line application (with a GUI frontend packaged separately) that makes it easy to setup and mount SSHFS/SFTP file systems.
 
 It allows you to define all your SFTP systems and easily mount/unmount them.
+
+A GTK frontend is available, named sftpman-gtk.
 """
 
 from setuptools import setup
 
 setup(
-    name = "SftpMan",
+    name = "sftpman",
     version = '0.2.0',
     description = "A command-line application that helps you mount SFTP file systems.",
     long_description = __doc__,
     author = "Slavi Pantaleev",
     author_email = "s.pantaleev@gmail.com",
-    url = "https://github.com/spantaleev/SftpMan",
+    url = "https://github.com/spantaleev/sftpman",
     keywords = ["sftp", "ssh", "sshfs"],
     license = "BSD",
     packages = ['sftpman'],
