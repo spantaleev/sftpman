@@ -151,6 +151,11 @@ class SystemModel(object):
         out['beforeMount'] = self.cmd_before_mount
         return json.dumps(out)
 
+    def save(self, environment):
+        path = environment.get_system_config_path(self.id)
+        with open(path, 'w') as f:
+            f.write(self.export())
+
     @staticmethod
     def create_by_id(id, environment):
         path = environment.get_system_config_path(id)
