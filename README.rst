@@ -1,7 +1,7 @@
 SftpMan
 =======
 
-.. image:: https://github.com/spantaleev/SftpMan/raw/master/sftpman-gui.png
+.. image:: https://github.com/spantaleev/sftpman-gtk/raw/master/sftpman-gui.png
 
 SftpMan with the GTK frontend.
 
