@@ -47,7 +47,7 @@ def shell_exec(command):
     return subprocess.Popen(command, shell=True, stdout=subprocess.PIPE).communicate()[0]
 
 
-def kill_pid(pid, signal=15):
+def kill_pid(pid, signal):
     """Sends a signal to the process with the given id."""
 
     shell_exec("/bin/kill -%d %d" % (signal, pid))
