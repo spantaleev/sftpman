@@ -149,6 +149,7 @@ class SystemModel(object):
         out['mountOptions'] = self.mount_opts
         out['mountPoint'] = self.mount_point
         out['beforeMount'] = self.cmd_before_mount
+        out['sshKey'] = self.ssh_key
         return json.dumps(out)
 
     def save(self, environment):
