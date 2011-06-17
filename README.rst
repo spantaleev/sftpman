@@ -91,8 +91,8 @@ Launch ``sftpman help`` to see the exact commands it offers.
 GUI Application
 ---------------
 
-There's a GTK frontend for sftpman, which is packaged separately.
-Look for ``sftpman-gtk``.
+`sftpman-gtk`_ is a GTK frontend for sftpman, which is packaged separately.
+Installing the frontend automatically installs the CLI application as a dependency.
 
 
 Dependencies
