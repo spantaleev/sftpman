@@ -103,13 +103,10 @@ class SystemModel(object):
         self.ssh_key = kwargs.get('sshKey', None)
         self.cmd_before_mount = kwargs.get('beforeMount', '/bin/true')
 
-    def _get_port(self):
-        return self._port
-
     def _set_port(self, value):
         self._port = int(value)
 
-    port = property(_get_port, _set_port)
+    port = property(lambda self: self._port, _set_port)
 
     def validate(self):
         def is_alphanumeric(value):
