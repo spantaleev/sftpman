@@ -92,7 +92,10 @@ class SftpCli(object):
 
 
 def start():
-    command = sys.argv[1]
+    try:
+        command = sys.argv[1]
+    except IndexError:
+        command = 'help'
     args = sys.argv[2:]
 
     instance = SftpCli()
