@@ -68,6 +68,9 @@ class EnvironmentModel(object):
 class SystemModel(object):
     """Represents a system (mount point) that sftpman manages."""
 
+    PORT_RANGE_MIN = 0
+    PORT_RANGE_MAX = 65535
+
     def __init__(self, **kwargs):
         self.id = kwargs.get('id', None)
         self.host = kwargs.get('host', None)
@@ -99,10 +102,14 @@ class SystemModel(object):
             errors.append(('user', 'Usernames can only contain letters and digits.'))
         try:
             port = int(self.port)
-            if not(0 <= port <= 65535):
+            if not(SystemModel.PORT_RANGE_MIN <= port <= SystemModel.PORT_RANGE_MAX):
                 raise ValueError('Bad port range.')
         except ValueError:
-            errors.append(('port', 'Ports need to be numbers between 0-65535.'))
+            msg = 'Ports need to be numbers between %d and %d.' % (
+                self.PORT_RANGE_MIN,
+                self.PORT_RANGE_MAX,
+            )
+            errors.append(('port', msg))
         if not isinstance(self.mount_opts, list):
             errors.append(('mount_opts', 'Bad options received.'))
         if not isinstance(self.cmd_before_mount, basestring):
