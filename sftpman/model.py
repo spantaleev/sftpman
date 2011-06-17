@@ -96,12 +96,20 @@ class SystemModel(object):
     def __init__(self, **kwargs):
         self.id = kwargs.get('id', None)
         self.host = kwargs.get('host', None)
-        self.port = int(kwargs.get('port', SystemModel.SSH_PORT_DEFAULT))
+        self.port = kwargs.get('port', SystemModel.SSH_PORT_DEFAULT)
         self.user = kwargs.get('user', None)
         self.mount_opts = list(kwargs.get('mountOptions', []))
         self.mount_point = kwargs.get('mountPoint', None)
         self.ssh_key = kwargs.get('sshKey', None)
         self.cmd_before_mount = kwargs.get('beforeMount', '/bin/true')
+
+    def _get_port(self):
+        return self._port
+
+    def _set_port(self, value):
+        self._port = int(value)
+
+    port = property(_get_port, _set_port)
 
     def validate(self):
         def is_alphanumeric(value):
@@ -122,11 +130,7 @@ class SystemModel(object):
             errors.append(('mount_point', 'Invalid ssh key path.'))
         if not is_alphanumeric(self.user):
             errors.append(('user', 'Usernames can only contain letters and digits.'))
-        try:
-            port = int(self.port)
-            if not(SystemModel.PORT_RANGE_MIN <= port <= SystemModel.PORT_RANGE_MAX):
-                raise ValueError('Bad port range.')
-        except ValueError:
+        if not(self.PORT_RANGE_MIN < self.port <= self.PORT_RANGE_MAX):
             msg = 'Ports need to be numbers between %d and %d.' % (
                 self.PORT_RANGE_MIN,
                 self.PORT_RANGE_MAX,
