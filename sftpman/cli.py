@@ -19,6 +19,8 @@ class SftpCli(object):
             print("%s:\n - %s\n" % (name_clean, getattr(self, name).__doc__))
 
     def command_preflight_check(self):
+        """Detects whether we have everything needed to mount sshfs filesystems.
+        """
         checks_pass, failures = self.environment.perform_preflight_check()
         if checks_pass:
             print('All checks pass.')
