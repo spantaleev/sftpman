@@ -43,7 +43,6 @@ class SftpCli(object):
             controller.mount()
         except SftpException, e:
             sys.stderr.write('Cannot mount: %s' % str(e))
-            # @todo - fix exit status number
             sys.exit(1)
 
     def command_unmount(self, system_id):
@@ -57,7 +56,6 @@ class SftpCli(object):
             controller.unmount()
         except SftpException, e:
             sys.stderr.write('Cannot unmount: %s' % str(e))
-            # @todo - fix exit status number
             sys.exit(1)
 
     def command_mount_all(self):
@@ -74,7 +72,6 @@ class SftpCli(object):
             except SftpException, e:
                 sys.stderr.write('Cannot mount: %s' % str(e))
                 has_failed = True
-        # @todo - fix exit status number
         sys.exit(0 if not has_failed else 1)
 
     def command_unmount_all(self):
@@ -91,7 +88,6 @@ class SftpCli(object):
             except SftpException, e:
                 sys.stderr.write('Cannot unmount: %s' % str(e))
                 has_failed = True
-        # @todo - fix exit status number
         sys.exit(0 if not has_failed else 1)
 
 
