@@ -51,9 +51,3 @@ def kill_pid(pid, signal):
     """Sends a signal to the process with the given id."""
 
     shell_exec("/bin/kill -%d %d" % (signal, pid))
-
-
-def open_file_browser(path):
-    """Opens a file browser at the specified path."""
-
-    subprocess.Popen(["/usr/bin/nautilus", path])
