@@ -101,7 +101,7 @@ class SystemModel(object):
         self.mount_opts = list(kwargs.get('mountOptions', []))
         self.mount_point = kwargs.get('mountPoint', None)
         self.ssh_key = kwargs.get('sshKey', None)
-        self.cmd_before_mount = kwargs.get('beforeMount', None)
+        self.cmd_before_mount = kwargs.get('beforeMount', '/bin/true')
 
     def validate(self):
         def is_alphanumeric(value):
@@ -134,7 +134,8 @@ class SystemModel(object):
             errors.append(('port', msg))
         if not isinstance(self.mount_opts, list):
             errors.append(('mount_opts', 'Bad options received.'))
-        if not isinstance(self.cmd_before_mount, basestring):
+        if not isinstance(self.cmd_before_mount, basestring) or \
+           self.cmd_before_mount == '':
             errors.append(('cmd_before_mount', 'Invalid before mount command.'))
 
         return (len(errors) == 0, errors)
