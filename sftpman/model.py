@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import with_statement
 import re
-from helper import json, shell_exec
+from helper import json, shell_exec, mkdir_p, rmdir, kill_pid
 from exception import SftpConfigException
 
 SSH_PORT_DEFAULT = 22
@@ -133,4 +133,105 @@ class SystemModel(object):
                 config = json.loads(f.read())
                 return SystemModel(**config)
         except (ValueError, IOError), e:
-            raise SftpConfigException('Failed finding or parsing config.', e)
+            msg = 'Failed finding or parsing config at %s.'
+            raise SftpConfigException(msg % path, e)
+
+
+class SystemControllerModel(object):
+    """Controls a given system within the environment.
+    The controller manages mounting, unmounting, cleaning up, etc.
+    """
+
+    SIGNAL_SIGTERM = 15
+    SIGNAL_SIGKILL = 9
+
+    #: Time to wait when unmounting before forcefully killing the mount process
+    KILL_WAIT_TIME_SECONDS = 2
+
+    def __init__(self, system, environment):
+        self.system = system
+        self.environment = environment
+
+    @property
+    def mounted(self):
+        return self.environment.is_mounted(self.system.id)
+
+    @property
+    def mount_point_local(self):
+        return self.environment.get_system_mount_dest(self.system.id)
+
+    @property
+    def mount_point_remote(self):
+        return self.system.mount_point
+
+    def _mount_point_local_create(self):
+        """Ensures the mount location exists, so we can start using it."""
+
+        # Ensure nothing's mounted there right now..
+        shell_exec("/bin/fusermount -u %s 2>&1" % self.mount_point_local)
+
+        # Ensure the directory path exists
+        mkdir_p(self.mount_point_local)
+
+    def _mount_point_local_delete(self):
+        rmdir(self.mount_point_local)
+
+    def mount(self):
+        """Mounts the sftp system if it's not already mounted."""
+        if self.mounted:
+            return
+
+        self._mount_point_local_create()
+
+        sshfs_options = " -o %s" % " -o ".join(self.system.mount_opts)
+
+        cmd = ("{cmd_before_mount} &&"
+               " /usr/bin/sshfs -o ssh_command='/usr/bin/ssh -p {port} -i {key}'"
+               " {sshfs_options} {user}@{host}:{remote_path} {local_path}"
+               " > /dev/null 2>&1")
+        cmd = cmd.format(
+            cmd_before_mount = self.system.cmd_before_mount,
+            port = self.system.port,
+            key = self.system.ssh_key,
+            sshfs_options = sshfs_options,
+            host = self.system.host,
+            user = self.system.user,
+            remote_path = self.mount_point_remote,
+            local_path = self.mount_point_local,
+        )
+
+        shell_exec(cmd)
+
+        # Clean up the directory tree if mounting failed
+        if not self.mounted:
+            self._mount_point_local_delete()
+
+    def unmount(self):
+        """Unmounts the sftp system if it's currently mounted."""
+        if not self.mounted:
+            return
+
+        # Try to unmount properly.
+        cmd = "/bin/fusermount -u %s > /dev/null 2>&1" % self.mount_point_local
+        shell_exec(cmd)
+
+        # The filesystem is probably still in use.
+        # kill sshfs and it re-run this same command (which will work then).
+        if self.mounted:
+            self._kill()
+            shell_exec(cmd)
+
+        self._mount_point_local_delete()
+
+    def _kill(self):
+        pid = self.environment.get_pid_by_system_id(self.system.id)
+        if pid is None:
+            return
+        kill_pid(pid, SystemControllerModel.SIGNAL_SIGTERM)
+
+        from time import sleep
+        sleep(SystemControllerModel.KILL_WAIT_TIME_SECONDS)
+
+        pid = self.environment.get_pid_by_system_id(self.system.id)
+        if pid is not None:
+            kill_pid(pid, SystemControllerModel.SIGNAL_SIGKILL)
