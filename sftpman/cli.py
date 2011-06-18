@@ -1,4 +1,6 @@
 import sys
+import getopt
+import os
 
 from exception import SftpException
 from model import EnvironmentModel, SystemModel, SystemControllerModel
@@ -17,6 +19,79 @@ class SftpCli(object):
                 continue
             name_clean = name[len("command_"):]
             print("%s:\n - %s\n" % (name_clean, getattr(self, name).__doc__.strip()))
+
+    def command_add(self, *args):
+        """Adds (defines) a new sftp file system.
+        Usage: sftpman add {options}
+        Available {options}:
+            --id={unique system identifier}
+                You use this to recognize and manage this sftp system.
+                It determines what the local mount point is.
+                If `--id=example`, the filesystem will be mounted to: `/mnt/sshfs/example`
+            --host={host to connect to}
+            --port={port to connect to} [default: 22]
+            --user={username to authenticate with} [default: current user]
+            --mount_opts={comma separated list of sshfs options} [optional]
+                `sshfs --help` tells you what's available
+            --mount_point={remote path to mount}
+            --ssh_key={path to the ssh key to use for authentication}
+            --cmd_before_mount={command to run before mounting} [default: /bin/true]
+                Allows you to run a custom command every time this system is mounted.
+        """
+        def usage():
+            print self.command_add.__doc__
+            sys.exit(1)
+
+        if len(args) == 0:
+            usage()
+
+        try:
+            fields = [
+                "id", "host", "port", "user",
+                "mount_opts", "mount_point",
+                "ssh_key", "cmd_before_mount",
+            ]
+            opts, _ = getopt.getopt(args, "", ["%s=" % s for s in fields])
+        except getopt.GetoptError, e:
+            sys.stderr.write('Eror: %s\n\n' % e)
+            usage()
+
+        system = SystemModel()
+        for name, value in opts:
+            name = name.lstrip('-')
+            if not hasattr(system, name):
+                continue
+            if name == 'mount_opts':
+                # Convert comma separated list to a python list
+                value = [opt.strip() for opt in value.split(',')]
+            setattr(system, name, value)
+
+        is_valid, errors = system.validate()
+        if not is_valid:
+            sys.stderr.write('Invalid data found:\n')
+            for field_name, msg in errors:
+                sys.stderr.write(' - %s / %s\n' % (field_name, msg))
+            sys.stderr.write('\n')
+            usage()
+            sys.exit(1)
+
+        system.save(self.environment)
+        print('Configuration created.')
+        print('You can try mounting now: `sftpman mount %s`' % system.id)
+
+    def command_rm(self, system_id):
+        """Removes a system by id.
+        Usage: sftpman rm {system_id}..
+        For a list of system ids, see `sftpman ls available`.
+        """
+        try:
+            system = SystemModel.create_by_id(system_id, self.environment)
+            controller = SystemControllerModel(system, self.environment)
+            controller.unmount()
+            system.delete(self.environment)
+        except SftpException, e:
+            sys.stderr.write('Cannot remove %s: %s' % (system_id, str(e)))
+            sys.exit(1)
 
     def command_preflight_check(self):
         """Detects whether we have everything needed to mount sshfs filesystems.
