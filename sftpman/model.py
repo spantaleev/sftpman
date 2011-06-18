@@ -108,6 +108,13 @@ class SystemModel(object):
 
     port = property(lambda self: self._port, _set_port)
 
+    def _set_ssh_key(self, value):
+        if value is not None:
+            value = os.path.expanduser(value)
+        self._ssh_key = value
+
+    ssh_key = property(lambda self: self._ssh_key, _set_ssh_key)
+
     def validate(self):
         def is_alphanumeric(value):
             if value is None:
