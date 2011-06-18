@@ -1,9 +1,7 @@
-SftpMan
-=======
+SftpMan with the GTK frontend
+=============================
 
 .. image:: https://github.com/spantaleev/sftpman-gtk/raw/master/sftpman-gui.png
-
-SftpMan with the GTK frontend.
 
 ---------------------------------------
 
@@ -45,47 +43,58 @@ You also need to install `sshfs`_ yourself.
 CLI Application
 ---------------
 
-Launching the main file (sftpman) with at least one additional command line argument will launch CLI mode.
-The CLI application supports the following commands::
+The CLI application (``sftpman`` executable) supports the following commands::
+
+    add:
+     - Adds (defines) a new sftp file system or overwrites an old one with the same id.
+            Usage: sftpman add {options}
+            Available {options}:
+                --id={unique system identifier}
+                    You use this to recognize and manage this sftp system.
+                    It determines what the local mount point is.
+                    If `--id=example`, the filesystem will be mounted to: `/mnt/sshfs/example`
+                --host={host to connect to}
+                --port={port to connect to} [default: 22]
+                --user={username to authenticate with} [default: current user]
+                --mount_opts={comma separated list of sshfs options} [optional]
+                    Example: --mount_opts="follow_symlinks, workaround=rename, big_writes"
+                    `sshfs --help` tells you what sshfs options are available
+                --mount_point={remote path to mount}
+                --ssh_key={path to the ssh key to use for authentication}
+                --cmd_before_mount={command to run before mounting} [default: /bin/true]
+                    Allows you to run a custom command every time this system is mounted.
 
     help:
-    - Shows a help menu
+     - Displays this help menu.
 
     ls:
      - Lists the available/mounted/unmounted sftp systems.
-
             Usage: sftpman ls {what}
             Where {what} is one of: available, mounted, unmounted
 
-
     mount:
      - Mounts the specified sftp system, unless it's already mounted.
-
-            Usage: sftpman mount {id}
-
+            Usage: sftpman mount {id}..
 
     mount_all:
      - Mounts all sftp file systems known to sftpman.
-
             Usage: sftpman mount_all
-
 
     preflight_check:
      - Detects whether we have everything needed to mount sshfs filesystems.
 
+    rm:
+     - Removes a system by id.
+            Usage: sftpman rm {system_id}..
+            For a list of system ids, see `sftpman ls available`.
 
     unmount:
      - Unmounts the specified sftp system.
-
-            Usage: sftpman unmount {id}
-
+            Usage: sftpman unmount {id}..
 
     unmount_all:
      - Unmounts all sftp file systems known to sftpman.
-
             Usage: sftpman unmount_all
-
-Launch ``sftpman help`` to see the exact commands it offers.
 
 
 GUI Application
