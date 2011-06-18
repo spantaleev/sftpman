@@ -229,7 +229,10 @@ class SystemControllerModel(object):
 
         self._mount_point_local_create()
 
-        sshfs_options = " -o %s" % " -o ".join(self.system.mount_opts)
+        if len(self.system.mount_opts) == 0:
+            sshfs_options = ""
+        else:
+            sshfs_options = " -o %s" % " -o ".join(self.system.mount_opts)
 
         cmd = ("{cmd_before_mount} &&"
                " /usr/bin/sshfs -o ssh_command='/usr/bin/ssh -p {port} -i {key}'"
