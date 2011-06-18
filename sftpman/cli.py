@@ -20,7 +20,7 @@ class SftpCli(object):
             print("%s:\n - %s\n" % (name_clean, getattr(self, name).__doc__.strip()))
 
     def command_add(self, *args):
-        """Adds (defines) a new sftp file system.
+        """Adds (defines) a new sftp file system or overwrites an old one with the same id.
         Usage: sftpman add {options}
         Available {options}:
             --id={unique system identifier}
