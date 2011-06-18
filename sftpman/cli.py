@@ -103,6 +103,8 @@ def start():
         command = sys.argv[1]
     except IndexError:
         command = 'help'
+    if '--help' in sys.argv:
+        command = 'help'
     args = sys.argv[2:]
 
     instance = SftpCli()
