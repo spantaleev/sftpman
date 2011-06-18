@@ -1,6 +1,5 @@
 import sys
 import getopt
-import os
 
 from exception import SftpException
 from model import EnvironmentModel, SystemModel, SystemControllerModel
