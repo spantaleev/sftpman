@@ -16,7 +16,7 @@ class SftpCli(object):
             if not name.startswith("command_"):
                 continue
             name_clean = name[len("command_"):]
-            print("%s:\n - %s\n" % (name_clean, getattr(self, name).__doc__))
+            print("%s:\n - %s\n" % (name_clean, getattr(self, name).__doc__.strip()))
 
     def command_preflight_check(self):
         """Detects whether we have everything needed to mount sshfs filesystems.
@@ -32,7 +32,6 @@ class SftpCli(object):
 
     def command_ls(self, list_what):
         """Lists the available/mounted/unmounted sftp systems.
-
         Usage: sftpman ls {what}
         Where {what} is one of: available, mounted, unmounted
         """
@@ -46,7 +45,6 @@ class SftpCli(object):
 
     def command_mount(self, system_id):
         """Mounts the specified sftp system, unless it's already mounted.
-
         Usage: sftpman mount {id}
         """
         try:
@@ -59,7 +57,6 @@ class SftpCli(object):
 
     def command_unmount(self, system_id):
         """Unmounts the specified sftp system.
-
         Usage: sftpman unmount {id}
         """
         try:
@@ -72,7 +69,6 @@ class SftpCli(object):
 
     def command_mount_all(self):
         """Mounts all sftp file systems known to sftpman.
-
         Usage: sftpman mount_all
         """
         has_failed = False
@@ -88,7 +84,6 @@ class SftpCli(object):
 
     def command_unmount_all(self):
         """Unmounts all sftp file systems known to sftpman.
-
         Usage: sftpman unmount_all
         """
         has_failed = False
