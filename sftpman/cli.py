@@ -128,28 +128,38 @@ class SftpCli(object):
         if len(lst) != 0:
             print("\n".join(lst))
 
-    def command_mount(self, system_id):
+    def command_mount(self, system_id, *system_ids):
         """Mounts the specified sftp system, unless it's already mounted.
-        Usage: sftpman mount {id}
+        Usage: sftpman mount {id}..
         """
-        try:
-            system = SystemModel.create_by_id(system_id, self.environment)
-            controller = SystemControllerModel(system, self.environment)
-            controller.mount()
-        except SftpException, e:
-            sys.stderr.write('Cannot mount %s: %s' % (system_id, str(e)))
+        system_ids = (system_id,) + system_ids
+        has_failed = False
+        for system_id in system_ids:
+            try:
+                system = SystemModel.create_by_id(system_id, self.environment)
+                controller = SystemControllerModel(system, self.environment)
+                controller.mount()
+            except SftpException, e:
+                sys.stderr.write('Cannot mount %s: %s' % (system_id, str(e)))
+                has_failed = True
+        if has_failed:
             sys.exit(1)
 
-    def command_unmount(self, system_id):
+    def command_unmount(self, system_id, *system_ids):
         """Unmounts the specified sftp system.
-        Usage: sftpman unmount {id}
+        Usage: sftpman unmount {id}..
         """
-        try:
-            system = SystemModel.create_by_id(system_id, self.environment)
-            controller = SystemControllerModel(system, self.environment)
-            controller.unmount()
-        except SftpException, e:
-            sys.stderr.write('Cannot unmount %s: %s' % (system_id, str(e)))
+        system_ids = (system_id,) + system_ids
+        has_failed = False
+        for system_id in system_ids:
+            try:
+                system = SystemModel.create_by_id(system_id, self.environment)
+                controller = SystemControllerModel(system, self.environment)
+                controller.unmount()
+            except SftpException, e:
+                sys.stderr.write('Cannot unmount %s: %s' % (system_id, str(e)))
+                has_failed = True
+        if has_failed:
             sys.exit(1)
 
     def command_mount_all(self):
