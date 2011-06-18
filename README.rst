@@ -105,8 +105,6 @@ Dependencies
 Known limitations
 -----------------
 
-- Adding/Editing file systems is not yet supported by the CLI application (works only in GUI),
-  but will be implemented soon
 - Doesn't support password authentication, only SSH keys
 - Doesn't support mounting in a location different than ``/mnt/sshfs/``
 
@@ -115,3 +113,4 @@ Known limitations
 .. _ArchLinux: http://www.archlinux.org/
 .. _AUR: https://wiki.archlinux.org/index.php/AUR
 .. _sftpman AUR package: http://aur.archlinux.org/packages.php?ID=49211
+.. _sftpman-gtk: https://github.com/spantaleev/sftpman-gtk
