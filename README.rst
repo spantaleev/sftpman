@@ -105,6 +105,8 @@ Dependencies
 Known limitations
 -----------------
 
+- Adding/Editing file systems is not yet supported by the CLI application (works only in GUI),
+  but will be implemented soon
 - Doesn't support password authentication, only SSH keys
 - Doesn't support mounting in a location different than ``/mnt/sshfs/``
 
