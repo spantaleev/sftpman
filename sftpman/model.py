@@ -110,10 +110,14 @@ class SystemModel(object):
 
     def validate(self):
         def is_alphanumeric(value):
+            if value is None:
+                return False
             # Well, not really alphanumeric, but close enough to call it that
             return re.compile('^[a-zA-Z0-9\.\-]+$').match(value) is not None
 
         def is_valid_path(value):
+            if value is None:
+                return False
             return re.compile('^(/[a-zA-Z0-9\.\-]+)+/?$').match(value) is not None
 
         errors = []
