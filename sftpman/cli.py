@@ -79,18 +79,27 @@ class SftpCli(object):
         print('Configuration created.')
         print('You can try mounting now: `sftpman mount %s`' % system.id)
 
-    def command_rm(self, system_id):
+    def command_rm(self, system_id, *system_ids):
         """Removes a system by id.
         Usage: sftpman rm {system_id}..
         For a list of system ids, see `sftpman ls available`.
         """
-        try:
-            system = SystemModel.create_by_id(system_id, self.environment)
-            controller = SystemControllerModel(system, self.environment)
-            controller.unmount()
-            system.delete(self.environment)
-        except SftpException, e:
-            sys.stderr.write('Cannot remove %s: %s' % (system_id, str(e)))
+        # Intentionally reading the first system_id separately,
+        # because it's required. The others are optional.
+        # This ensures that we'll generate an error if someone tries to call
+        # this without the required argument.
+        system_ids = (system_id,) + system_ids
+        has_failed = False
+        for system_id in system_ids:
+            try:
+                system = SystemModel.create_by_id(system_id, self.environment)
+                controller = SystemControllerModel(system, self.environment)
+                controller.unmount()
+                system.delete(self.environment)
+            except SftpException, e:
+                sys.stderr.write('Cannot remove %s: %s\n' % (system_id, str(e)))
+                has_failed = True
+        if has_failed:
             sys.exit(1)
 
     def command_preflight_check(self):
