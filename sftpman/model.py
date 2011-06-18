@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import with_statement
+import os
 import re
 from helper import json, shell_exec, mkdir_p, rmdir, kill_pid
 from exception import SftpConfigException
@@ -11,7 +12,6 @@ class EnvironmentModel(object):
     """
 
     def __init__(self):
-        import os
         self.mount_path_base = '/mnt/sshfs/'
         self.config_path_base = os.path.expanduser('~/.config/sftpman/')
         self.config_path_mounts = '%smounts/' % self.config_path_base
@@ -40,6 +40,8 @@ class EnvironmentModel(object):
         return None
 
     def get_available_ids(self):
+        if not os.path.exists(self.config_path_mounts):
+            return []
         cfg_files = shell_exec('/bin/ls %s' % self.config_path_mounts).strip().split('\n')
         return [file_name[0:-3] for file_name in cfg_files if file_name.endswith('.js')]
 
@@ -68,8 +70,6 @@ class EnvironmentModel(object):
         sshfs filesystems.
         :return: two-tuple (boolean checks_pass, list failure messages)
         """
-        import os
-
         failures = []
         if not os.access(self.mount_path_base, os.W_OK):
             msg = ("Mount path `{path}` doesn't exist or is not writable"
@@ -155,12 +155,12 @@ class SystemModel(object):
 
     def save(self, environment):
         path = environment.get_system_config_path(self.id)
+        mkdir_p(os.path.dirname(path))
         with open(path, 'w') as f:
             f.write(self.export())
 
     def delete(self, environment):
         path = environment.get_system_config_path(self.id)
-        import os
         os.unlink(path)
 
     @staticmethod

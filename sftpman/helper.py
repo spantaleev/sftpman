@@ -24,7 +24,7 @@ if json is None:
 
 
 def mkdir_p(path):
-    """NOOP if the directory exists. If not, it creates the the whole directory tree."""
+    """NOOP if the directory exists. If not, it creates the whole directory tree."""
     try:
         os.makedirs(path)
     except OSError as exc:
