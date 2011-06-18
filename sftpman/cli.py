@@ -32,7 +32,8 @@ class SftpCli(object):
             --port={port to connect to} [default: 22]
             --user={username to authenticate with} [default: current user]
             --mount_opts={comma separated list of sshfs options} [optional]
-                `sshfs --help` tells you what's available
+                Example: --mount_opts="follow_symlinks, workaround=rename, big_writes"
+                `sshfs --help` tells you what sshfs options are available
             --mount_point={remote path to mount}
             --ssh_key={path to the ssh key to use for authentication}
             --cmd_before_mount={command to run before mounting} [default: /bin/true]
