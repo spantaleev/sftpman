@@ -128,7 +128,7 @@ class SystemModel(object):
         if not is_valid_path(self.mount_point):
             errors.append(('mount_point', 'Invalid remote mount point.'))
         if not is_valid_path(self.ssh_key):
-            errors.append(('mount_point', 'Invalid ssh key path.'))
+            errors.append(('ssh_key', 'Invalid ssh key path.'))
         if not is_alphanumeric(self.user):
             errors.append(('user', 'Usernames can only contain letters and digits.'))
         if not(self.PORT_RANGE_MIN < self.port <= self.PORT_RANGE_MAX):
