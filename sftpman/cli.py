@@ -30,8 +30,8 @@ class SftpCli(object):
             --host={host to connect to}
             --port={port to connect to} [default: 22]
             --user={username to authenticate with} [default: current user]
-            --mount_opts={comma separated list of sshfs options} [optional]
-                Example: --mount_opts="follow_symlinks, workaround=rename, big_writes"
+            --mount_opt={option to pass to sshfs} [optional] [can be passed more than once]
+                Example: --mount_opt="follow_symlinks" --mount_opt="workaround=rename"
                 `sshfs --help` tells you what sshfs options are available
             --mount_point={remote path to mount}
             --ssh_key={path to the ssh key to use for authentication}
@@ -46,9 +46,12 @@ class SftpCli(object):
             usage()
 
         try:
+            # All of these (except mount_opt) map directly to the model properties
+            # We allow several `mount_opt` flags and merge their values, before
+            # assigning to the `mount_opts` property (which expects a list).
             fields = [
                 "id", "host", "port", "user",
-                "mount_opts", "mount_point",
+                "mount_opt", "mount_point",
                 "ssh_key", "cmd_before_mount",
             ]
             opts, _ = getopt.getopt(args, "", ["%s=" % s for s in fields])
@@ -57,14 +60,16 @@ class SftpCli(object):
             usage()
 
         system = SystemModel()
+        mount_opts = []
         for name, value in opts:
             name = name.lstrip('-')
             if not hasattr(system, name):
                 continue
-            if name == 'mount_opts':
-                # Convert comma separated list to a python list
-                value = [opt.strip() for opt in value.split(',')]
+            if name == 'mount_opt':
+                mount_opts.append(value)
+                continue
             setattr(system, name, value)
+        system.mount_opts = mount_opts
 
         is_valid, errors = system.validate()
         if not is_valid:
