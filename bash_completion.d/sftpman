@@ -1,0 +1,90 @@
+_sftpman() {
+	local first cur prev opts prefix suffix
+	COMPREPLY=()
+
+	first="${COMP_WORDS[1]}"
+	prev="${COMP_WORDS[COMP_CWORD-1]}"
+	cur="${COMP_WORDS[COMP_CWORD]}"
+
+	prefix=""
+	suffix=""
+	opts="" # nothing to suggest by default
+
+	if [ "$COMP_CWORD" = "1" ]; then
+		# Suggest main sections for the first argument after the executable name
+		opts="add help ls mount mount_all unmount unmount_all rm preflight_check"
+	else
+		# Custom suggestions depending on the main section (first argument)
+		case "$first" in
+			"ls")
+				opts="available mounted unmounted"
+				;;
+			"mount")
+				# Only suggest unmounted systems for mounting.
+				# It doesn't make sense to suggest already mounted systems.
+				opts=$(sftpman ls unmounted)
+				;;
+			"unmount")
+				# Only suggest mounted systems for unmounting.
+				# It doesn't make sense to suggest unmounted systems.
+				opts=$(sftpman ls mounted)
+				;;
+			"add")
+				# Try to recognize a known flag in the previous word
+				# and suggest local completions for it.
+				# If such a tag can't be recognized, assume that we should
+				# start a new flag and suggest flag-name completions.
+				case "$prev" in
+					"--id"|"--mount_point"|"--cmd_before_mount")
+						# Can't provide any suggestions for --id and --mount_point
+						# We can provide partial support for --cmd_before_mount easily,
+						# but it won't be very good, so we'd better now confuse people with it.
+						opts=""
+						;;
+					"--host")
+						_known_hosts_real "$cur"
+						return 0
+						;;
+					"--port")
+						# Suggest the default ssh port (22)
+						opts="22"
+						;;
+					"--user")
+						# Suggest valid users available on this system.
+						# There's a good chance the user to authenticate with
+						# has an account on both systems (local, remote).
+						_usergroup
+						return 0
+						;;
+					"--ssh_key")
+						_filedir
+						return 0
+						;;
+					"--mount_opt")
+						# Try to get all the available options from sshfs.
+						# We're using " as prefix/suffix, because some options
+						# contain the = sign, and --mount_opt=opt=here, is not valid,
+						# but --mount_opt="opt=here" and --mount_opt "opt=here" always are.
+						# Some of the options for sshfs expect some modifications, meaning
+						# that what we would complete is invalid.
+						# Anyways, this is still good enough assistance.
+						opts=$(sshfs --help 2>&1 | grep "\-o" | cut -d '-' -f 2 | cut -d ' ' -f 2 | grep -vE "^$")
+						prefix='"'
+						suffix='"'
+						;;
+					*)
+						opts="--id --host --port --user --ssh_key --mount_opt --mount_point --cmd_before_mount"
+						;;
+				esac
+				;;
+			"rm")
+				opts=$(sftpman ls available)
+				;;
+		esac
+	fi
+
+	COMPREPLY=( $(compgen -W "$opts" -P "$prefix" -S "$suffix" -- $cur) )
+	return 0
+}
+
+complete -F _sftpman sftpman
