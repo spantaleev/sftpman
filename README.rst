@@ -56,8 +56,8 @@ The CLI application (``sftpman`` executable) supports the following commands::
                 --host={host to connect to}
                 --port={port to connect to} [default: 22]
                 --user={username to authenticate with} [default: current user]
-                --mount_opts={comma separated list of sshfs options} [optional]
-                    Example: --mount_opts="follow_symlinks, workaround=rename, big_writes"
+                --mount_opt={option to pass to sshfs} [optional] [can be passed more than once]
+                    Example: --mount_opt="follow_symlinks" --mount_opt="workaround=rename"
                     `sshfs --help` tells you what sshfs options are available
                 --mount_point={remote path to mount}
                 --ssh_key={path to the ssh key to use for authentication}
