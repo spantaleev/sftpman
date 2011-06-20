@@ -222,7 +222,7 @@ class SystemControllerModel(object):
         """Ensures the mount location exists, so we can start using it."""
 
         # Ensure nothing's mounted there right now..
-        shell_exec("/bin/fusermount -u %s 2>&1" % self.mount_point_local)
+        shell_exec('/bin/fusermount -u %s' % self.mount_point_local)
 
         # Ensure the directory path exists
         mkdir_p(self.mount_point_local)
@@ -271,7 +271,7 @@ class SystemControllerModel(object):
             return
 
         # Try to unmount properly.
-        cmd = "/bin/fusermount -u %s > /dev/null 2>&1" % self.mount_point_local
+        cmd = '/bin/fusermount -u %s' % self.mount_point_local
         shell_exec(cmd)
 
         # The filesystem is probably still in use.
