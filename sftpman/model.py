@@ -3,7 +3,7 @@ from __future__ import with_statement
 import os
 import re
 from helper import json, shell_exec, mkdir_p, rmdir, kill_pid
-from exception import SftpConfigException
+from exception import SftpConfigException, SftpMountException
 
 
 class EnvironmentModel(object):
@@ -244,8 +244,7 @@ class SystemControllerModel(object):
 
         cmd = ("{cmd_before_mount} &&"
                " /usr/bin/sshfs -o ssh_command='/usr/bin/ssh -p {port} -i {key}'"
-               " {sshfs_options} {user}@{host}:{remote_path} {local_path}"
-               " > /dev/null 2>&1")
+               " {sshfs_options} {user}@{host}:{remote_path} {local_path}")
         cmd = cmd.format(
             cmd_before_mount = self.system.cmd_before_mount,
             port = self.system.port,
@@ -257,11 +256,14 @@ class SystemControllerModel(object):
             local_path = self.mount_point_local,
         )
 
-        shell_exec(cmd)
+        output = shell_exec(cmd).strip()
 
-        # Clean up the directory tree if mounting failed
         if not self.mounted:
+            # Clean up the directory tree
             self._mount_point_local_delete()
+            if output == '':
+                output = 'Mounting failed for a reason unknown to sftpman.'
+            raise SftpMountException(cmd, output)
 
     def unmount(self):
         """Unmounts the sftp system if it's currently mounted."""

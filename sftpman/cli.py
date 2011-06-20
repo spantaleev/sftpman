@@ -1,7 +1,7 @@
 import sys
 import getopt
 
-from exception import SftpException
+from exception import SftpException, SftpConfigException, SftpMountException
 from model import EnvironmentModel, SystemModel, SystemControllerModel
 
 
@@ -143,8 +143,13 @@ class SftpCli(object):
                 system = SystemModel.create_by_id(system_id, self.environment)
                 controller = SystemControllerModel(system, self.environment)
                 controller.mount()
-            except SftpException, e:
-                sys.stderr.write('Cannot mount %s: %s' % (system_id, str(e)))
+            except SftpConfigException, e:
+                sys.stderr.write('Cannot mount %s: %s\n\n' % (system_id, str(e)))
+                has_failed = True
+            except SftpMountException, e:
+                sys.stderr.write('Cannot mount %s!\n\n' % system_id)
+                sys.stderr.write('Mount command: \n%s\n\n' % e.mount_cmd)
+                sys.stderr.write('Command output: \n%s\n\n' % e.mount_cmd_output)
                 has_failed = True
         if has_failed:
             sys.exit(1)
@@ -160,8 +165,8 @@ class SftpCli(object):
                 system = SystemModel.create_by_id(system_id, self.environment)
                 controller = SystemControllerModel(system, self.environment)
                 controller.unmount()
-            except SftpException, e:
-                sys.stderr.write('Cannot unmount %s: %s' % (system_id, str(e)))
+            except SftpConfigException, e:
+                sys.stderr.write('Cannot unmount %s: %s\n\n' % (system_id, str(e)))
                 has_failed = True
         if has_failed:
             sys.exit(1)
@@ -176,9 +181,13 @@ class SftpCli(object):
                 system = SystemModel.create_by_id(system_id, self.environment)
                 controller = SystemControllerModel(system, self.environment)
                 controller.mount()
-            except SftpException, e:
-                sys.stderr.write('Cannot mount %s: %s' % (system_id, str(e)))
+            except SftpConfigException, e:
+                sys.stderr.write('Cannot mount %s: %s\n\n' % (system_id, str(e)))
                 has_failed = True
+            except SftpMountException, e:
+                sys.stderr.write('Cannot mount %s!\n\n' % system_id)
+                sys.stderr.write('Mount command: \n%s\n\n' % e.mount_cmd)
+                sys.stderr.write('Command output: \n%s\n\n' % e.mount_cmd_output)
         sys.exit(0 if not has_failed else 1)
 
     def command_unmount_all(self):
@@ -191,8 +200,8 @@ class SftpCli(object):
                 system = SystemModel.create_by_id(system_id, self.environment)
                 controller = SystemControllerModel(system, self.environment)
                 controller.unmount()
-            except SftpException, e:
-                sys.stderr.write('Cannot unmount %s: %s' % (system_id, str(e)))
+            except SftpConfigException, e:
+                sys.stderr.write('Cannot unmount %s: %s\n\n' % (system_id, str(e)))
                 has_failed = True
         sys.exit(0 if not has_failed else 1)
 
