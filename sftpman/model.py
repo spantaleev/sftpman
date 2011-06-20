@@ -202,6 +202,9 @@ class SystemControllerModel(object):
     #: Time to wait when unmounting before forcefully killing the mount process
     KILL_WAIT_TIME_SECONDS = 2
 
+    #: Time to wait for sshfs (ssh) to establish a connection
+    SSH_CONNECT_TIMEOUT = 8
+
     def __init__(self, system, environment):
         self.system = system
         self.environment = environment
@@ -243,10 +246,12 @@ class SystemControllerModel(object):
             sshfs_options = " -o %s" % " -o ".join(self.system.mount_opts)
 
         cmd = ("{cmd_before_mount} &&"
-               " /usr/bin/sshfs -o ssh_command='/usr/bin/ssh -p {port} -i {key}'"
+               " /usr/bin/sshfs -o ssh_command="
+               "'/usr/bin/ssh -o ConnectTimeout={timeout} -p {port} -i {key}'"
                " {sshfs_options} {user}@{host}:{remote_path} {local_path}")
         cmd = cmd.format(
             cmd_before_mount = self.system.cmd_before_mount,
+            timeout = self.SSH_CONNECT_TIMEOUT,
             port = self.system.port,
             key = self.system.ssh_key,
             sshfs_options = sshfs_options,
