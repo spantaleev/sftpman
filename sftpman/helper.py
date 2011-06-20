@@ -42,7 +42,7 @@ def rmdir(path):
 
 def shell_exec(command):
     """Executes the given shell command and returns its output."""
-    return subprocess.Popen(command, shell=True, stdout=subprocess.PIPE).communicate()[0]
+    return subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).communicate()[0]
 
 
 def kill_pid(pid, signal):
