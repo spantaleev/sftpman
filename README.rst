@@ -45,25 +45,6 @@ CLI Application
 
 The CLI application (``sftpman`` executable) supports the following commands::
 
-    add:
-     - Adds (defines) a new sftp file system or overwrites an old one with the same id.
-            Usage: sftpman add {options}
-            Available {options}:
-                --id={unique system identifier}
-                    You use this to recognize and manage this sftp system.
-                    It determines what the local mount point is.
-                    If `--id=example`, the filesystem will be mounted to: `/mnt/sshfs/example`
-                --host={host to connect to}
-                --port={port to connect to} [default: 22]
-                --user={username to authenticate with} [default: current user]
-                --mount_opt={option to pass to sshfs} [optional] [can be passed more than once]
-                    Example: --mount_opt="follow_symlinks" --mount_opt="workaround=rename"
-                    `sshfs --help` tells you what sshfs options are available
-                --mount_point={remote path to mount}
-                --ssh_key={path to the ssh key to use for authentication}
-                --cmd_before_mount={command to run before mounting} [default: /bin/true]
-                    Allows you to run a custom command every time this system is mounted.
-
     help:
      - Displays this help menu.
 
@@ -87,6 +68,25 @@ The CLI application (``sftpman`` executable) supports the following commands::
      - Removes a system by id.
             Usage: sftpman rm {system_id}..
             For a list of system ids, see `sftpman ls available`.
+
+    setup:
+     - Defines a new sftp file system configuration or edits an old one with the same id.
+            Usage: sftpman setup {options}
+            Available {options}:
+                --id={unique system identifier}
+                    You use this to recognize and manage this sftp system.
+                    It determines what the local mount point is.
+                    If `--id=example`, the filesystem will be mounted to: `/mnt/sshfs/example`
+                --host={host to connect to}
+                --port={port to connect to} [default: 22]
+                --user={username to authenticate with} [default: current user]
+                --mount_opt={option to pass to sshfs} [optional] [can be passed more than once]
+                    Example: --mount_opt="follow_symlinks" --mount_opt="workaround=rename"
+                    `sshfs --help` tells you what sshfs options are available
+                --mount_point={remote path to mount}
+                --ssh_key={path to the ssh key to use for authentication}
+                --cmd_before_mount={command to run before mounting} [default: /bin/true]
+                    Allows you to run a custom command every time this system is mounted.
 
     unmount:
      - Unmounts the specified sftp system.

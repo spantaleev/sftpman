@@ -12,7 +12,7 @@ _sftpman() {
 
 	if [ "$COMP_CWORD" = "1" ]; then
 		# Suggest main sections for the first argument after the executable name
-		opts="add help ls mount mount_all unmount unmount_all rm preflight_check"
+		opts="setup help ls mount mount_all unmount unmount_all rm preflight_check"
 	else
 		# Custom suggestions depending on the main section (first argument)
 		case "$first" in
@@ -29,18 +29,23 @@ _sftpman() {
 				# It doesn't make sense to suggest unmounted systems.
 				opts=$(sftpman ls mounted)
 				;;
-			"add")
+			"setup")
 				# Try to recognize a known flag in the previous word
 				# and suggest local completions for it.
 				# If such a tag can't be recognized, assume that we should
 				# start a new flag and suggest flag-name completions.
 				case "$prev" in
-					"--id"|"--mount_point"|"--cmd_before_mount")
-						# Can't provide any suggestions for --id and --mount_point
+					"--mount_point"|"--cmd_before_mount")
+						# Can't provide any suggestions for --mount_point
 						# We can provide partial support for --cmd_before_mount easily,
-						# but it won't be very good, so we'd better now confuse people with it.
+						# but it won't be very good, so we'd better not confuse people with it.
 						opts=""
 						;;
+                    "--id")
+                        # This is either a new id (when adding a system) or an old one (when editing).
+                        # Let's suggest available ids in case the user wants to edit an old system.
+                        opts=$(sftpman ls available)
+                        ;;
 					"--host")
 						_known_hosts_real "$cur"
 						return 0
