@@ -47,20 +47,11 @@ class EnvironmentModel(object):
         return [file_name[0:-3] for file_name in cfg_files if file_name.endswith('.js')]
 
     def get_mounted_ids(self):
-        # Looking for /mnt/sshfs/{id}
-        regex = re.compile("/usr/bin/sshfs(?:.+?)%s(\w+)$" %
-                           re.escape(self.mount_path_base))
-
-        processes = shell_exec("/bin/ps ux | /bin/grep '/usr/bin/sshfs'")
-        ids = []
-        for line in processes.split("\n"):
-            if self.mount_path_base not in line:
-                continue
-            match_object = re.search(regex, line)
-            if (match_object is None):
-                continue
-            ids.append(match_object.group(1))
-        return ids
+        # Looking for /mnt/sshfs/{id} in output that looks like this:
+        # user@host:/remote/path on /mnt/sshfs/id type fuse.sshfs ...
+        regex = re.compile(' %s(\w+) ' % self.mount_path_base)
+        mounted = shell_exec('mount -l -t fuse.sshfs')
+        return regex.findall(mounted)
 
     def get_unmounted_ids(self):
         ids_mounted = self.get_mounted_ids()
