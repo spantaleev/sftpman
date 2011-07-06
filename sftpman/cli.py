@@ -39,7 +39,7 @@ class SftpCli(object):
                 Allows you to run a custom command every time this system is mounted.
         """
         def usage():
-            print self.command_add.__doc__
+            print self.command_setup.__doc__
             sys.exit(1)
 
         if len(args) == 0:
@@ -56,7 +56,7 @@ class SftpCli(object):
             ]
             opts, _ = getopt.getopt(args, "", ["%s=" % s for s in fields])
         except getopt.GetoptError, e:
-            sys.stderr.write('Eror: %s\n\n' % e)
+            sys.stderr.write('Error: %s\n\n' % e)
             usage()
 
         system = SystemModel()
