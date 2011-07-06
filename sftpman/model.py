@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-from __future__ import with_statement
+
 import os
 import re
-from helper import json, shell_exec, mkdir_p, rmdir, kill_pid
-from exception import SftpConfigException, SftpMountException
+from .helper import json, shell_exec, mkdir_p, rmdir, kill_pid
+from .exception import SftpConfigException, SftpMountException
 
 
 class EnvironmentModel(object):
@@ -146,7 +146,7 @@ class SystemModel(object):
             errors.append(('port', msg))
         if not isinstance(self.mount_opts, list):
             errors.append(('mount_opts', 'Bad options received.'))
-        if not isinstance(self.cmd_before_mount, basestring) or \
+        if not isinstance(self.cmd_before_mount, str) or \
            self.cmd_before_mount == '':
             errors.append(('cmd_before_mount', 'Invalid before mount command.'))
 
@@ -186,7 +186,7 @@ class SystemModel(object):
             with open(path) as f:
                 config = json.loads(f.read())
                 return SystemModel(**config)
-        except (ValueError, IOError), e:
+        except (ValueError, IOError) as e:
             msg = 'Failed finding or parsing config at %s.'
             raise SftpConfigException(msg % path, e)
 

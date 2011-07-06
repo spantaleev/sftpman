@@ -112,7 +112,7 @@ Dependencies
 ------------
 
 - `sshfs`_
-- Python 2.6+
+- Python 2.7+
 
 
 Known limitations

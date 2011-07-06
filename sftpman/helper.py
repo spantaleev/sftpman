@@ -37,12 +37,13 @@ def rmdir(path):
     try:
         os.rmdir(path)
     except OSError as exc:
-        print str(exc)
+        print(str(exc))
 
 
 def shell_exec(command):
     """Executes the given shell command and returns its output."""
-    return subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).communicate()[0]
+    out = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).communicate()[0]
+    return out.decode('utf-8')
 
 
 def kill_pid(pid, signal):
