@@ -85,6 +85,9 @@ class SystemModel(object):
 
     SSH_PORT_DEFAULT = 22
 
+    AUTH_METHOD_PUBLIC_KEY = 'publickey'
+    AUTH_METHOD_PASSWORD = 'password'
+
     def __init__(self, **kwargs):
         self.id = kwargs.get('id', None)
         self.host = kwargs.get('host', None)
@@ -92,6 +95,7 @@ class SystemModel(object):
         self.user = kwargs.get('user', None)
         self.mount_opts = list(kwargs.get('mountOptions', []))
         self.mount_point = kwargs.get('mountPoint', None)
+        self.auth_method = kwargs.get('authType', self.AUTH_METHOD_PUBLIC_KEY)
         self.ssh_key = kwargs.get('sshKey', None)
         self.cmd_before_mount = kwargs.get('beforeMount', '/bin/true')
 
@@ -126,8 +130,12 @@ class SystemModel(object):
             errors.append(('host', 'Hosts can only contain letters, digits, dot and dash.'))
         if not is_valid_path(self.mount_point):
             errors.append(('mount_point', 'Invalid remote mount point.'))
-        if not is_valid_path(self.ssh_key):
-            errors.append(('ssh_key', 'Invalid ssh key path.'))
+        if self.auth_method not in (self.AUTH_METHOD_PUBLIC_KEY, self.AUTH_METHOD_PASSWORD):
+            errors.append(('auth_method', 'Unknown auth type.'))
+        else:
+            if self.auth_method == self.AUTH_METHOD_PUBLIC_KEY:
+                if not is_valid_path(self.ssh_key):
+                    errors.append(('ssh_key', 'Invalid ssh key path.'))
         if not is_alphanumeric(self.user):
             errors.append(('user', 'Usernames can only contain letters and digits.'))
         if not(self.PORT_RANGE_MIN < self.port <= self.PORT_RANGE_MAX):
@@ -153,6 +161,7 @@ class SystemModel(object):
         out['mountOptions'] = self.mount_opts
         out['mountPoint'] = self.mount_point
         out['beforeMount'] = self.cmd_before_mount
+        out['authType'] = self.auth_method
         out['sshKey'] = self.ssh_key
         return json.dumps(out)
 
@@ -232,20 +241,25 @@ class SystemControllerModel(object):
         self._mount_point_local_create()
 
         if len(self.system.mount_opts) == 0:
-            sshfs_options = ""
+            sshfs_opts = ""
         else:
-            sshfs_options = " -o %s" % " -o ".join(self.system.mount_opts)
+            sshfs_opts = " -o %s" % " -o ".join(self.system.mount_opts)
+
+        if self.system.auth_method == self.system.AUTH_METHOD_PUBLIC_KEY:
+            ssh_opts = '-o PreferredAuthentications=publickey -i %s' % self.system.ssh_key
+        else:
+            ssh_opts = '-o PreferredAuthentications=password'
 
         cmd = ("{cmd_before_mount} &&"
                " /usr/bin/sshfs -o ssh_command="
-               "'/usr/bin/ssh -o ConnectTimeout={timeout} -p {port} -i {key}'"
-               " {sshfs_options} {user}@{host}:{remote_path} {local_path}")
+               "'/usr/bin/ssh -o ConnectTimeout={timeout} -p {port} {ssh_opts}'"
+               " {sshfs_opts} {user}@{host}:{remote_path} {local_path}")
         cmd = cmd.format(
             cmd_before_mount = self.system.cmd_before_mount,
             timeout = self.SSH_CONNECT_TIMEOUT,
             port = self.system.port,
-            key = self.system.ssh_key,
-            sshfs_options = sshfs_options,
+            ssh_opts = ssh_opts,
+            sshfs_opts = sshfs_opts,
             host = self.system.host,
             user = self.system.user,
             remote_path = self.mount_point_remote,

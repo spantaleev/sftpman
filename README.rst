@@ -84,7 +84,11 @@ The CLI application (``sftpman`` executable) supports the following commands::
                     Example: --mount_opt="follow_symlinks" --mount_opt="workaround=rename"
                     `sshfs --help` tells you what sshfs options are available
                 --mount_point={remote path to mount}
+                --auth_method={method}
+                    Specifies the authentication method.
+                    Can be `password` or `publickey`. [default: publickey]
                 --ssh_key={path to the ssh key to use for authentication}
+                    Only applies if auth_method is `publickey`.
                 --cmd_before_mount={command to run before mounting} [default: /bin/true]
                     Allows you to run a custom command every time this system is mounted.
 
@@ -114,7 +118,6 @@ Dependencies
 Known limitations
 -----------------
 
-- Doesn't support password authentication, only SSH keys
 - Doesn't support mounting in a location different than ``/mnt/sshfs/``
 
 

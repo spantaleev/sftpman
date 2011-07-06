@@ -34,7 +34,11 @@ class SftpCli(object):
                 Example: --mount_opt="follow_symlinks" --mount_opt="workaround=rename"
                 `sshfs --help` tells you what sshfs options are available
             --mount_point={remote path to mount}
+            --auth_method={method}
+                Specifies the authentication method.
+                Can be `password` or `publickey`. [default: publickey]
             --ssh_key={path to the ssh key to use for authentication}
+                Only applies if auth_method is `publickey`.
             --cmd_before_mount={command to run before mounting} [default: /bin/true]
                 Allows you to run a custom command every time this system is mounted.
         """
@@ -53,6 +57,7 @@ class SftpCli(object):
                 "id", "host", "port", "user",
                 "mount_opt", "mount_point",
                 "ssh_key", "cmd_before_mount",
+                "auth_method",
             ]
             opts, _ = getopt.getopt(args, "", ["%s=" % s for s in fields])
         except getopt.GetoptError, e:

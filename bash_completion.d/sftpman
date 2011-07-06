@@ -61,6 +61,9 @@ _sftpman() {
 						_usergroup
 						return 0
 						;;
+					"--auth_method")
+						opts="publickey password"
+						;;
 					"--ssh_key")
 						_filedir
 						return 0
@@ -78,7 +81,7 @@ _sftpman() {
 						suffix='"'
 						;;
 					*)
-						opts="--id --host --port --user --ssh_key --mount_opt --mount_point --cmd_before_mount"
+						opts="--id --host --port --user --auth_method --ssh_key --mount_opt --mount_point --cmd_before_mount"
 						;;
 				esac
 				;;
