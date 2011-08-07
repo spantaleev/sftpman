@@ -13,7 +13,7 @@ from setuptools import setup
 
 setup(
     name = "sftpman",
-    version = '0.5.0',
+    version = '0.5.1',
     description = "A command-line application that helps you mount SFTP file systems.",
     long_description = __doc__,
     author = "Slavi Pantaleev",
