@@ -121,7 +121,7 @@ class SystemModel(object):
         def is_valid_path(value):
             if value is None:
                 return False
-            return re.compile('^/(([a-zA-Z0-9\.\-]+)/?)*?$').match(value) is not None
+            return re.compile('^/(([a-zA-Z0-9\.\-_]+)/?)*?$').match(value) is not None
 
         errors = []
         if not is_alphanumeric(self.id):
