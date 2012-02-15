@@ -2,7 +2,7 @@
 
 import os
 import re
-from .helper import json, shell_exec, mkdir_p, rmdir, kill_pid
+from .helper import json, shell_exec, mkdir_p, rmdir, kill_pid, which
 from .exception import SftpConfigException, SftpMountException
 
 
@@ -32,7 +32,7 @@ class EnvironmentModel(object):
         mount_dest = self.get_system_mount_dest(system_id)
         regex = re.compile("^(?:\w+)\s+(\d+)\s+(?:.+?)%s$" % re.escape(mount_dest))
 
-        processes = shell_exec("/bin/ps ux | /bin/grep '/usr/bin/sshfs'")
+        processes = shell_exec("ps ux | grep sshfs")
         for line in processes.split("\n"):
             match_object = regex.match(line)
             if match_object is None:
@@ -43,7 +43,7 @@ class EnvironmentModel(object):
     def get_available_ids(self):
         if not os.path.exists(self.config_path_mounts):
             return []
-        cfg_files = shell_exec('/bin/ls %s' % self.config_path_mounts).strip().split('\n')
+        cfg_files = shell_exec('ls %s' % self.config_path_mounts).strip().split('\n')
         return [file_name[0:-3] for file_name in cfg_files if file_name.endswith('.js')]
 
     def get_mounted_ids(self):
@@ -69,9 +69,9 @@ class EnvironmentModel(object):
             failures.append(msg.format(
                 path = self.mount_path_base
             ))
-        if not os.path.exists('/usr/bin/sshfs'):
+        if which('sshfs') is None:
             msg = ("SSHFS (http://fuse.sourceforge.net/sshfs.html)"
-                   " is not installed to /usr/bin/sshfs.")
+                   " does not seem to be installed.")
             failures.append(msg)
 
         return len(failures) == 0, failures
@@ -97,7 +97,7 @@ class SystemModel(object):
         self.mount_point = kwargs.get('mountPoint', None)
         self.auth_method = kwargs.get('authType', self.AUTH_METHOD_PUBLIC_KEY)
         self.ssh_key = kwargs.get('sshKey', None)
-        self.cmd_before_mount = kwargs.get('beforeMount', '/bin/true')
+        self.cmd_before_mount = kwargs.get('beforeMount', 'true')
 
     def _set_port(self, value):
         self._port = int(value)
@@ -225,7 +225,7 @@ class SystemControllerModel(object):
         """Ensures the mount location exists, so we can start using it."""
 
         # Ensure nothing's mounted there right now..
-        shell_exec('/bin/fusermount -u %s' % self.mount_point_local)
+        shell_exec('fusermount -u %s' % self.mount_point_local)
 
         # Ensure the directory path exists
         mkdir_p(self.mount_point_local)
@@ -251,8 +251,8 @@ class SystemControllerModel(object):
             ssh_opts = '-o PreferredAuthentications=password'
 
         cmd = ("{cmd_before_mount} &&"
-               " /usr/bin/sshfs -o ssh_command="
-               "'/usr/bin/ssh -o ConnectTimeout={timeout} -p {port} {ssh_opts}'"
+               " sshfs -o ssh_command="
+               "'ssh -o ConnectTimeout={timeout} -p {port} {ssh_opts}'"
                " {sshfs_opts} {user}@{host}:{remote_path} {local_path}")
         cmd = cmd.format(
             cmd_before_mount = self.system.cmd_before_mount,
@@ -281,11 +281,11 @@ class SystemControllerModel(object):
             return
 
         # Try to unmount properly.
-        cmd = '/bin/fusermount -u %s' % self.mount_point_local
+        cmd = 'fusermount -u %s' % self.mount_point_local
         shell_exec(cmd)
 
         # The filesystem is probably still in use.
-        # kill sshfs and it re-run this same command (which will work then).
+        # kill sshfs and re-run this same command (which will work then).
         if self.mounted:
             self._kill()
             shell_exec(cmd)
