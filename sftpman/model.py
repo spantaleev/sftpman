@@ -49,8 +49,9 @@ class EnvironmentModel(object):
     def get_mounted_ids(self):
         # Looking for /mnt/sshfs/{id} in output that looks like this:
         # user@host:/remote/path on /mnt/sshfs/id type fuse.sshfs ...
-        regex = re.compile(' %s(\w+) ' % self.mount_path_base)
-        mounted = shell_exec('mount -l -t fuse.sshfs')
+        # "mount -l -t fuse.sshfs" cannot be used, as it requires root privileges
+        mounted = shell_exec('mount -l')
+        regex = re.compile(' %s(\w+) type fuse\.sshfs' % self.mount_path_base)
         return regex.findall(mounted)
 
     def get_unmounted_ids(self):
