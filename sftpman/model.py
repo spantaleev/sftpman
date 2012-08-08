@@ -51,7 +51,7 @@ class EnvironmentModel(object):
         # user@host:/remote/path on /mnt/sshfs/id type fuse.sshfs ...
         # "mount -l -t fuse.sshfs" cannot be used, as it requires root privileges
         mounted = shell_exec('mount -l')
-        regex = re.compile(' %s(\w+) type fuse\.sshfs' % self.mount_path_base)
+        regex = re.compile(' %s(.+?) type fuse\.sshfs' % self.mount_path_base)
         return regex.findall(mounted)
 
     def get_unmounted_ids(self):
