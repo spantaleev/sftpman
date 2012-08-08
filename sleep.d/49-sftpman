@@ -1,4 +1,4 @@
-#!/bin/dash
+#!/bin/bash
 
 if [ -n "$1" ]; then
 	if ([ "$1" = "suspend" ] || [ "$1" = "hibernate" ]); then
