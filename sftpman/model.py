@@ -28,16 +28,15 @@ class EnvironmentModel(object):
         return system_id in self.get_mounted_ids()
 
     def get_pid_by_system_id(self, system_id):
-        # Looking for `username {PID} blah blah {mount_dest}`
+        # Matching in `{PID} blah blah {mount_dest}`
         mount_dest = self.get_system_mount_dest(system_id)
-        regex = re.compile("^(?:\w+)\s+(\d+)\s+(?:.+?)%s$" % re.escape(mount_dest))
+        regex = re.compile("^(\d+)\s+(?:.+?)\s%s$" % re.escape(mount_dest))
 
-        processes = shell_exec("ps ux | grep sshfs")
+        processes = shell_exec("pgrep --list-full sshfs")
         for line in processes.split("\n"):
             match_object = regex.match(line)
-            if match_object is None:
-                continue
-            return int(match_object.group(1))
+            if match_object is not None:
+                return int(match_object.group(1))
         return None
 
     def get_available_ids(self):
