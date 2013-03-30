@@ -1,8 +1,11 @@
 #!/bin/bash
 
+# Sleep hook for pm-utils.
+# Takes care of unmounting everything for all users on system suspend/hibernate.
+# To be placed in /etc/pm/sleep.d/
+
 if [ -n "$1" ]; then
 	if ([ "$1" = "suspend" ] || [ "$1" = "hibernate" ]); then
-		# going to sleep now, so unmount everything for all users
 		for username in $(ps aux | grep '/mnt/sshfs/' | grep -v 'grep' | grep -o -E '^(\w+)\s' | uniq); do
 			su -l $username -c 'sftpman unmount_all'
 		done;
