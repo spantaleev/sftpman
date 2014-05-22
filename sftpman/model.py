@@ -118,6 +118,11 @@ class SystemModel(object):
             # Well, not really alphanumeric, but close enough to call it that
             return re.compile('^[a-zA-Z0-9\.\-]+$').match(value) is not None
 
+        def is_valid_username(value):
+            if value is None:
+                return False
+            return re.compile('^[a-zA-Z0-9\.\-\@]+$').match(value) is not None
+
         def is_valid_path(value):
             if value is None:
                 return False
@@ -137,7 +142,7 @@ class SystemModel(object):
                 if not os.path.exists(self.ssh_key):
                     errors.append(('ssh_key', 'Invalid ssh key path.'))
         if not is_alphanumeric(self.user):
-            errors.append(('user', 'Usernames can only contain letters and digits.'))
+            errors.append(('user', 'Usernames can only contain letters, at signs and digits.'))
         if not(self.PORT_RANGE_MIN < self.port <= self.PORT_RANGE_MAX):
             msg = 'Ports need to be numbers between %d and %d.' % (
                 self.PORT_RANGE_MIN,
