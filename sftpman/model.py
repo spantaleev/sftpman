@@ -141,7 +141,7 @@ class SystemModel(object):
             if self.auth_method == self.AUTH_METHOD_PUBLIC_KEY:
                 if not os.path.exists(self.ssh_key):
                     errors.append(('ssh_key', 'Invalid ssh key path.'))
-        if not is_alphanumeric(self.user):
+        if not is_valid_username(self.user):
             errors.append(('user', 'Usernames can only contain letters, at signs and digits.'))
         if not(self.PORT_RANGE_MIN < self.port <= self.PORT_RANGE_MAX):
             msg = 'Ports need to be numbers between %d and %d.' % (
