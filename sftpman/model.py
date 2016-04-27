@@ -168,7 +168,7 @@ class SystemModel(object):
         out['beforeMount'] = self.cmd_before_mount
         out['authType'] = self.auth_method
         out['sshKey'] = self.ssh_key
-        return json.dumps(out)
+        return json.dumps(out, indent=4)
 
     def save(self, environment):
         path = environment.get_system_config_path(self.id)
