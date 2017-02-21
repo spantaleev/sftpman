@@ -257,7 +257,7 @@ class SystemControllerModel(object):
 
         cmd = ("{cmd_before_mount} &&"
                " sshfs -o ssh_command="
-               "'ssh -o ConnectTimeout={timeout} -p {port} {ssh_opts}'"
+               "'ssh' -o ConnectTimeout={timeout} -p {port} {ssh_opts}"
                " {sshfs_opts} {user}@{host}:{remote_path} {local_path}")
         cmd = cmd.format(
             cmd_before_mount = self.system.cmd_before_mount,
