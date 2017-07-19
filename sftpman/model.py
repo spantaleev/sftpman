@@ -88,12 +88,16 @@ class SystemModel(object):
     AUTH_METHOD_PUBLIC_KEY = 'publickey'
     AUTH_METHOD_PASSWORD = 'password'
 
+    # libfuse (>=3.0.0) dropped support for big_writes
+    UNSUPPORTED_MOUNT_OPTS = ['big_writes']
+
     def __init__(self, **kwargs):
         self.id = kwargs.get('id', None)
         self.host = kwargs.get('host', None)
         self.port = kwargs.get('port', SystemModel.SSH_PORT_DEFAULT)
         self.user = kwargs.get('user', None)
         self.mount_opts = list(kwargs.get('mountOptions', []))
+        self.mount_opts = [v for v in self.mount_opts if v not in SystemModel.UNSUPPORTED_MOUNT_OPTS]
         self.mount_point = kwargs.get('mountPoint', None)
         self.auth_method = kwargs.get('authType', self.AUTH_METHOD_PUBLIC_KEY)
         self.ssh_key = kwargs.get('sshKey', None)
