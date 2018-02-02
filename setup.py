@@ -20,7 +20,7 @@ setup(
     author_email = "s.pantaleev@gmail.com",
     url = "https://github.com/spantaleev/sftpman",
     keywords = ["sftp", "ssh", "sshfs"],
-    license = "BSD",
+    license = "GPL v3",
     packages = ['sftpman'],
     entry_points="""
     [console_scripts]
@@ -34,7 +34,7 @@ setup(
         "Environment :: Console",
         "Intended Audience :: Developers",
         "Intended Audience :: System Administrators",
-        "License :: OSI Approved :: BSD License",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Operating System :: Unix",
         "Topic :: Communications :: File Sharing",
         "Topic :: Internet",
