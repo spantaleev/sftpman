@@ -7,7 +7,7 @@
 if [ -n "$1" ]; then
 	if ([ "$1" = "suspend" ] || [ "$1" = "hibernate" ]); then
 		for username in $(ps aux | grep '/mnt/sshfs/' | grep -v 'grep' | grep -o -E '^(\w+)\s' | uniq); do
-			su -l $username -c 'sftpman unmount_all'
+			su -l $username -c 'sftpman umount_all'
 		done;
 	fi
 fi
