@@ -18,7 +18,7 @@ class EnvironmentModel(object):
         self.config_path_mounts = '%smounts/' % self.config_path_base
 
     def get_system_config_path(self, system_id):
-        return '%s%s.js' % (self.config_path_mounts, system_id)
+        return '%s%s.json' % (self.config_path_mounts, system_id)
 
     def get_system_mount_dest(self, system_id):
         """The local path where the system will be mounted."""
@@ -43,7 +43,7 @@ class EnvironmentModel(object):
         if not os.path.exists(self.config_path_mounts):
             return []
         cfg_files = shell_exec('ls %s' % self.config_path_mounts).strip().split('\n')
-        return [file_name[0:-3] for file_name in cfg_files if file_name.endswith('.js')]
+        return [file_name[0:-5] for file_name in cfg_files if file_name.endswith('.json')]
 
     def get_mounted_ids(self):
         # Looking for /mnt/sshfs/{id} in output that looks like this:
