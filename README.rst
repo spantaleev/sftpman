@@ -92,13 +92,13 @@ The CLI application (``sftpman`` executable) supports the following commands::
                 --cmd_before_mount={command to run before mounting} [default: /bin/true]
                     Allows you to run a custom command every time this system is mounted.
 
-    unmount:
+    umount:
      - Unmounts the specified sftp system.
-            Usage: sftpman unmount {id}..
+            Usage: sftpman umount {id}..
 
-    unmount_all:
+    umount_all:
      - Unmounts all sftp file systems known to sftpman.
-            Usage: sftpman unmount_all
+            Usage: sftpman umount_all
 
 
 GUI Application

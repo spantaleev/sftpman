@@ -12,7 +12,7 @@ _sftpman() {
 
 	if [ "$COMP_CWORD" = "1" ]; then
 		# Suggest main sections for the first argument after the executable name
-		opts="setup help ls mount mount_all unmount unmount_all rm preflight_check"
+		opts="setup help ls mount mount_all umount umount_all rm preflight_check"
 	else
 		# Custom suggestions depending on the main section (first argument)
 		case "$first" in
@@ -24,7 +24,7 @@ _sftpman() {
 				# It doesn't make sense to suggest already mounted systems.
 				opts=$(sftpman ls unmounted)
 				;;
-			"unmount")
+			"umount")
 				# Only suggest mounted systems for unmounting.
 				# It doesn't make sense to suggest unmounted systems.
 				opts=$(sftpman ls mounted)

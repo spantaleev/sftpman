@@ -160,9 +160,9 @@ class SftpCli(object):
         if has_failed:
             sys.exit(1)
 
-    def command_unmount(self, system_id, *system_ids):
+    def command_umount(self, system_id, *system_ids):
         """Unmounts the specified sftp system.
-        Usage: sftpman unmount {id}..
+        Usage: sftpman umount {id}..
         """
         system_ids = (system_id,) + system_ids
         has_failed = False
@@ -196,9 +196,9 @@ class SftpCli(object):
                 sys.stderr.write('Command output: \n%s\n\n' % e.mount_cmd_output)
         sys.exit(0 if not has_failed else 1)
 
-    def command_unmount_all(self):
+    def command_umount_all(self):
         """Unmounts all sftp file systems known to sftpman.
-        Usage: sftpman unmount_all
+        Usage: sftpman umount_all
         """
         has_failed = False
         for system_id in self.environment.get_mounted_ids():
