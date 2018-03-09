@@ -116,6 +116,13 @@ class SystemModel(object):
     ssh_key = property(lambda self: self._ssh_key, _set_ssh_key)
 
     def validate(self):
+        def is_valid_id(value):
+            if value is None:
+                return False
+            if value in ('.', '..'):
+                return False
+            return re.compile('^[a-zA-Z0-9\.\-_@]+$').match(value) is not None
+
         def is_alphanumeric(value):
             if value is None:
                 return False
@@ -133,8 +140,8 @@ class SystemModel(object):
             return re.compile('^/(([a-zA-Z0-9\.\-_]+)/?)*?$').match(value) is not None
 
         errors = []
-        if not is_alphanumeric(self.id):
-            errors.append(('id', 'IDs can only contain letters, digits, dot and dash.'))
+        if not is_valid_id(self.id):
+            errors.append(('id', 'IDs can only contain letters, digits, dot, @, dash and underscore.'))
         if not is_alphanumeric(self.host):
             errors.append(('host', 'Hosts can only contain letters, digits, dot and dash.'))
         if not is_valid_path(self.mount_point):
