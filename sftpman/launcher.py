@@ -4,7 +4,7 @@
 def main():
     import sys, os
     path = os.path.dirname(os.path.dirname(__file__))
-    sys.path.append(path)
+    sys.path.insert(0, path)
     from sftpman import cli
     cli.start()
 
