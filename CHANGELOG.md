@@ -1,3 +1,9 @@
+# Version 1.1
+
+Adds support for additional SSH authentication methods
+(keyboard-interactive, hostbased, gssapi-with-mic).
+
+
 # Version 1.0
 
 Relicensed under GPL v3.
