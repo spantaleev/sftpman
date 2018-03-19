@@ -87,6 +87,17 @@ class SystemModel(object):
 
     AUTH_METHOD_PUBLIC_KEY = 'publickey'
     AUTH_METHOD_PASSWORD = 'password'
+    AUTH_METHOD_INTERACTIVE = 'keyboard-interactive'
+    AUTH_METHOD_HOSTBASED = 'hostbased'
+    AUTH_METHOD_GSSAPI_WITH_MIC = 'gssapi-with-mic'
+
+    AUTH_METHODS = (
+        AUTH_METHOD_PUBLIC_KEY,
+        AUTH_METHOD_PASSWORD,
+        AUTH_METHOD_INTERACTIVE,
+        AUTH_METHOD_HOSTBASED,
+        AUTH_METHOD_GSSAPI_WITH_MIC
+    )
 
     # libfuse (>=3.0.0) dropped support for big_writes
     UNSUPPORTED_MOUNT_OPTS = ['big_writes']
@@ -146,7 +157,7 @@ class SystemModel(object):
             errors.append(('host', 'Hosts can only contain letters, digits, dot and dash.'))
         if not is_valid_path(self.mount_point):
             errors.append(('mount_point', 'Invalid remote mount point.'))
-        if self.auth_method not in (self.AUTH_METHOD_PUBLIC_KEY, self.AUTH_METHOD_PASSWORD):
+        if self.auth_method not in self.AUTH_METHODS:
             errors.append(('auth_method', 'Unknown auth type.'))
         else:
             if self.auth_method == self.AUTH_METHOD_PUBLIC_KEY:
@@ -263,6 +274,8 @@ class SystemControllerModel(object):
 
         if self.system.auth_method == self.system.AUTH_METHOD_PUBLIC_KEY:
             ssh_opts = '-o PreferredAuthentications=publickey -i %s' % self.system.ssh_key
+        elif self.system.auth_method:
+            ssh_opts = '-o PreferredAuthentications=%s' % self.system.auth_method
         else:
             ssh_opts = '-o PreferredAuthentications=password'
 
