@@ -30,14 +30,14 @@ class SftpCli(object):
                 If `--id=example`, the filesystem will be mounted to: `/mnt/sshfs/example`
             --host={host to connect to}
             --port={port to connect to} [default: 22]
-            --user={username to authenticate with} [default: current user]
+            --user={username to authenticate with}
             --mount_opt={option to pass to sshfs} [optional] [can be passed more than once]
                 Example: --mount_opt="follow_symlinks" --mount_opt="workaround=rename"
                 `sshfs --help` tells you what sshfs options are available
             --mount_point={remote path to mount}
             --auth_method={method}
                 Specifies the authentication method.
-                Can be `password` or `publickey`. [default: publickey]
+                Can be `password`, `publickey`, `hostbased`, `keyboard-interactive` or `gssapi-with-mic`. [default: publickey]
             --ssh_key={path to the ssh key to use for authentication}
                 Only applies if auth_method is `publickey`.
             --cmd_before_mount={command to run before mounting} [default: /bin/true]
@@ -81,7 +81,7 @@ class SftpCli(object):
         if not is_valid:
             sys.stderr.write('Invalid data found:\n')
             for field_name, msg in errors:
-                sys.stderr.write(' - %s / %s\n' % (field_name, msg))
+                sys.stderr.write(' - %s: %s\n' % (field_name, msg))
             sys.stderr.write('\n')
             usage()
             sys.exit(1)
