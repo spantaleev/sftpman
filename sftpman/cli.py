@@ -69,10 +69,10 @@ class SftpCli(object):
         mount_opts = []
         for name, value in opts:
             name = name.lstrip('-')
-            if not hasattr(system, name):
-                continue
             if name == 'mount_opt':
                 mount_opts.append(value)
+                continue
+            if not hasattr(system, name):
                 continue
             setattr(system, name, value)
         system.mount_opts = mount_opts
