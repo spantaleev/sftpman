@@ -161,7 +161,7 @@ class SystemModel(object):
             errors.append(('auth_method', 'Unknown auth type.'))
         else:
             if self.auth_method == self.AUTH_METHOD_PUBLIC_KEY:
-                if not os.path.exists(self.ssh_key):
+                if self.ssh_key is None or not os.path.exists(self.ssh_key):
                     errors.append(('ssh_key', 'Invalid ssh key path.'))
         if not is_valid_username(self.user):
             errors.append(('user', 'Usernames can only contain letters, at signs and digits.'))
