@@ -125,9 +125,9 @@ class SftpCli(object):
                 sys.stderr.write(' - %s\n' % msg)
             sys.exit(1)
 
-    def command_ls(self, list_what):
+    def command_ls(self, list_what = 'available'):
         """Lists the available/mounted/unmounted sftp systems.
-        Usage: sftpman ls {what}
+        Usage: sftpman ls {what} [default: available]
         Where {what} is one of: available, mounted, unmounted
         """
         if list_what in ('available', 'mounted', 'unmounted'):
