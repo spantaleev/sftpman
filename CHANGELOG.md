@@ -1,3 +1,8 @@
+# Version 1.2
+
+Adds support for SSH agent authentication.
+
+
 # Version 1.1
 
 Adds support for additional SSH authentication methods
