@@ -86,11 +86,11 @@ class SystemModel(object):
     SSH_PORT_DEFAULT = 22
 
     AUTH_METHOD_PUBLIC_KEY = 'publickey'
-    # AUTH_MEHOD_AUTHENTICATION_AGENT is a placeholder authentication method.
+    # AUTH_METHOD_AUTHENTICATION_AGENT is a placeholder authentication method.
     # It's not recognized by the `ssh` command (as a valid PreferredAuthentications choice),
     # # but instructs us to avoid specifying a preferred authentication and SSH key (`-i ..`),
     # thus delegating to an SSH agent, if available.
-    AUTH_MEHOD_AUTHENTICATION_AGENT = 'authentication-agent'
+    AUTH_METHOD_AUTHENTICATION_AGENT = 'authentication-agent'
     AUTH_METHOD_PASSWORD = 'password'
     AUTH_METHOD_INTERACTIVE = 'keyboard-interactive'
     AUTH_METHOD_HOSTBASED = 'hostbased'
@@ -98,7 +98,7 @@ class SystemModel(object):
 
     AUTH_METHODS = (
         AUTH_METHOD_PUBLIC_KEY,
-        AUTH_MEHOD_AUTHENTICATION_AGENT,
+        AUTH_METHOD_AUTHENTICATION_AGENT,
         AUTH_METHOD_PASSWORD,
         AUTH_METHOD_INTERACTIVE,
         AUTH_METHOD_HOSTBASED,
@@ -280,7 +280,7 @@ class SystemControllerModel(object):
 
         if self.system.auth_method == self.system.AUTH_METHOD_PUBLIC_KEY:
             ssh_opts = '-o PreferredAuthentications=publickey -i %s' % self.system.ssh_key
-        elif self.system.auth_method == self.system.AUTH_MEHOD_AUTHENTICATION_AGENT:
+        elif self.system.auth_method == self.system.AUTH_METHOD_AUTHENTICATION_AGENT:
             # By not specifying a key and preferred authentication method,
             # we're hoping to delegate all this to an already running SSH agent, if available.
             ssh_opts = ""
