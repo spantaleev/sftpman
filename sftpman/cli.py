@@ -1,6 +1,6 @@
 import sys
 import getopt
-import collections
+import collections.abc
 
 from .exception import SftpException, SftpConfigException, SftpMountException
 from .model import EnvironmentModel, SystemModel, SystemControllerModel
@@ -223,7 +223,7 @@ def start():
 
     instance = SftpCli()
     callback = getattr(instance, "command_%s" % command, None)
-    if isinstance(callback, collections.Callable):
+    if isinstance(callback, collections.abc.Callable):
         try:
             callback(*args)
         except TypeError as e:
