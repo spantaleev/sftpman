@@ -30,7 +30,7 @@ class EnvironmentModel(object):
     def get_pid_by_system_id(self, system_id):
         # Matching in `{PID} blah blah {mount_dest}`
         mount_dest = self.get_system_mount_dest(system_id)
-        regex = re.compile("^(\d+)\s+(?:.+?)\s%s$" % re.escape(mount_dest))
+        regex = re.compile("^(\\d+)\\s+(?:.+?)\\s%s$" % re.escape(mount_dest))
 
         processes = shell_exec("pgrep --list-full sshfs")
         for line in processes.split("\n"):
@@ -50,7 +50,7 @@ class EnvironmentModel(object):
         # user@host:/remote/path on /mnt/sshfs/id type fuse.sshfs ...
         # "mount -l -t fuse.sshfs" cannot be used, as it requires root privileges
         mounted = shell_exec('mount -l')
-        regex = re.compile(' %s(.+?) type fuse\.sshfs' % self.mount_path_base)
+        regex = re.compile(' %s(.+?) type fuse\\.sshfs' % self.mount_path_base)
         return regex.findall(mounted)
 
     def get_unmounted_ids(self):
@@ -138,23 +138,23 @@ class SystemModel(object):
                 return False
             if value in ('.', '..'):
                 return False
-            return re.compile('^[a-zA-Z0-9\.\-_@]+$').match(value) is not None
+            return re.compile('^[a-zA-Z0-9\\.\\-_@]+$').match(value) is not None
 
         def is_alphanumeric(value):
             if value is None:
                 return False
             # Well, not really alphanumeric, but close enough to call it that
-            return re.compile('^[a-zA-Z0-9\.\-]+$').match(value) is not None
+            return re.compile('^[a-zA-Z0-9\\.\\-]+$').match(value) is not None
 
         def is_valid_username(value):
             if value is None:
                 return False
-            return re.compile('^[a-zA-Z0-9\.\-_\@]+$').match(value) is not None
+            return re.compile('^[a-zA-Z0-9\\.\\-_@]+$').match(value) is not None
 
         def is_valid_path(value):
             if value is None:
                 return False
-            return re.compile('^/(([a-zA-Z0-9\.\-_]+)/?)*?$').match(value) is not None
+            return re.compile('^/(([a-zA-Z0-9\\.\\-_]+)/?)*?$').match(value) is not None
 
         errors = []
         if not is_valid_id(self.id):
