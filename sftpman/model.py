@@ -118,7 +118,7 @@ class SystemModel(object):
         self.mount_point = kwargs.get('mountPoint', None)
         self.auth_method = kwargs.get('authType', self.AUTH_METHOD_PUBLIC_KEY)
         self.ssh_key = kwargs.get('sshKey', None)
-        self.cmd_before_mount = kwargs.get('beforeMount', 'true')
+        self.cmd_before_mount = kwargs.get('beforeMount', '')
 
     def _set_port(self, value):
         self._port = int(value)
@@ -179,8 +179,7 @@ class SystemModel(object):
             errors.append(('port', msg))
         if not isinstance(self.mount_opts, list):
             errors.append(('mount_opts', 'Bad options received.'))
-        if not isinstance(self.cmd_before_mount, str) or \
-           self.cmd_before_mount == '':
+        if not isinstance(self.cmd_before_mount, str):
             errors.append(('cmd_before_mount', 'Invalid before mount command.'))
 
         return (len(errors) == 0, errors)
@@ -296,8 +295,7 @@ class SystemControllerModel(object):
         )
         ssh_cmd = ssh_cmd.rstrip()
 
-        cmd = ("{cmd_before_mount} &&"
-               " sshfs -o ssh_command="
+        cmd = (" sshfs -o ssh_command="
                "'{ssh_cmd}'"
                " {sshfs_opts} {user}@{host}:{remote_path} {local_path}")
         cmd = cmd.format(
@@ -309,6 +307,9 @@ class SystemControllerModel(object):
             remote_path = self.mount_point_remote,
             local_path = self.mount_point_local,
         )
+
+        if self.system.cmd_before_mount:
+            cmd = f"{self.system.cmd_before_mount} && {cmd}"
 
         output = shell_exec(cmd).strip()
 
